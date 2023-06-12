@@ -14,7 +14,6 @@ static constexpr std::array<Rank, 2> en_passant_rank = {
 	4  // BLACK
 };
 
-Bitboard calc_gives_to_en_passant(Move m);
 Bitboard calc_pawn_attack(Square sq, Bitboard blockers, Side p);
 Bitboard calc_bishop_attack(Square sq, Bitboard blockers);
 Bitboard calc_knight_attack(Square sq);

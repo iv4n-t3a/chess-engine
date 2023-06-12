@@ -35,7 +35,7 @@ constexpr Piece new_piece(Move m) {
 	return Piece((m >> 9) & 0b111);
 }
 constexpr CastleType castle_type(Move m) {
-	return CastleType(m >> 3);
+	return CastleType(m >> 2);
 }
 constexpr Move build_move(Square from, Square to) {
 	return NORMAL | (from << 2) | (to << 8);
@@ -54,8 +54,8 @@ constexpr Move build_castle(CastleType c) {
 inline Square formal_from(Move m) { // not optimised
 	switch (move_type(m)) {
 		case NORMAL: return from(m);
-		case EN_PASSANT: return square(from_by_file(m), side(m) == WHITE ? 4 : 3);
-		case PROMOTION: return square(from_by_file(m), side(m) == WHITE ? 6 : 1);
+		case EN_PASSANT: return square(file_from(m), side(m) == WHITE ? 4 : 3);
+		case PROMOTION: return square(file_from(m), side(m) == WHITE ? 6 : 1);
 		case CASTLE:
 			switch (castle_type(m)) {
 				case WHITE_OO: return E1;
@@ -69,14 +69,14 @@ inline Square formal_from(Move m) { // not optimised
 inline Square formal_to(Move m) { // not optimised
 	switch (move_type(m)) {
 		case NORMAL: return to(m);
-		case EN_PASSANT: return square(from_by_file(m), side(m) == WHITE ? 5 : 2);
-		case PROMOTION: return square(from_by_file(m), side(m) == WHITE ? 7 : 0);
+		case EN_PASSANT: return square(file_to(m), side(m) == WHITE ? 5 : 2);
+		case PROMOTION: return square(file_to(m), side(m) == WHITE ? 7 : 0);
 		case CASTLE:
 			switch (castle_type(m)) {
-				case WHITE_OO: return H1;
-				case WHITE_OOO: return A1;
-				case BLACK_OO: return H8;
-				case BLACK_OOO: return A8;
+				case WHITE_OO: return G1;
+				case WHITE_OOO: return C1;
+				case BLACK_OO: return G8;
+				case BLACK_OOO: return C8;
 			}
 	};
 	return NONE_SQUARE;

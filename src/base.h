@@ -10,8 +10,8 @@ static const int PIECECOUNT = 6;
 typedef uint64_t Bitboard;
 typedef uint8_t Square;
 typedef uint16_t Hash;
-typedef uint8_t Rank;
 typedef uint8_t File;
+typedef uint8_t Rank;
 typedef uint16_t Move;
 typedef uint8_t CastleRights;
 
@@ -58,7 +58,6 @@ enum Piece {
 	QUEEN,
 	KING,
 };
-static const std::array<Piece, PIECECOUNT> PIECES = { PAWN, BISHOP, KNIGHT, ROOK, QUEEN, KING };
 
 enum MoveType {
 	NORMAL,
@@ -101,8 +100,11 @@ constexpr File file(Square s) {
 constexpr Square square(File f, Rank r) {
 	return f*8 + r;
 }
-constexpr bool can_castle(CastleRights r, CastleType t, Side s) {
-	return (r << t) & 1;
+constexpr bool can_castle(CastleRights r, CastleType t) {
+	return r & (1 << t);
+}
+constexpr void disable_castle(CastleRights& r, CastleType t) {
+	r &= ~(1 << t);
 }
 
 #endif // #ifndef TYPES

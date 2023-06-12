@@ -179,27 +179,12 @@ consteval std::array<Bitboard, 64> init_king_attack() {
 	return res;
 }
 
-constexpr std::array<Bitboard, std::numeric_limits<Move>::max() + 1> init_gives_to_en_passant() {
-	std::array<Bitboard, std::numeric_limits<Move>::max() + 1> res = {0};
-	for (File file = 0; file < 7; file++) {
-		Move m1 = build_move(1ull << file*2, 1ull << file*4),
-		     m2 = build_move(1ull << file*7, 1ull << file*5);
-		res[m1] = 1ull << file*4;
-		res[m2] = 1ull << file*5;
-	}
-	return res;
-}
-static constexpr std::array<Bitboard, std::numeric_limits<Move>::max() + 1> gives_to_en_passant = init_gives_to_en_passant();
-
 static constexpr std::array<Bitboard, 64> knight_attack = init_knight_attack();
 static constexpr std::array<Bitboard, 64> king_attack = init_king_attack();
 static constexpr std::array< std::array<Bitboard, PAWN_BLOCK_COMBS_COUNT>, 128 > pawn_attack = init_pawn_attack();
 static constexpr std::array< std::array<Bitboard, BISHOP_BLOCK_COMBS_COUNT>, 64 > bishop_attack = init_bishop_attack();
 static constexpr std::array< std::array<Bitboard, ROOK_BLOCK_COMBS_COUNT>, 64 > rook_attack = init_rook_attack();
 
-Bitboard calc_gives_to_en_passant(Move m) {
-	return gives_to_en_passant[m];
-}
 Bitboard calc_knight_attack(Square sq) {
 	return knight_attack[sq];
 }
