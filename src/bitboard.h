@@ -26,12 +26,15 @@ constexpr void mv(Bitboard& bb, Square from, Square to) {
 constexpr uint8_t popcount(Bitboard bb) {
 	return __builtin_popcountll(bb);
 }
+
+// requires -march=native flag in compilation
 inline Bitboard pext(Bitboard blockers, Bitboard mask) {
 	return _pext_u64(blockers, mask);
 }
 inline Bitboard pdep(Bitboard p, Bitboard mask) {
 	return _pdep_u64(p, mask);
 }
+
 constexpr Bitboard consteval_pdep(Bitboard p, Bitboard mask) {
 	Bitboard dest = 0;
 	int k = 0;
