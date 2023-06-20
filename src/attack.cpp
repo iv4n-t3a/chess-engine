@@ -17,7 +17,7 @@ static constexpr size_t BISHOP_BLOCK_COMBS_COUNT = 1 << BISHOP_MASK_SIZE;
 static constexpr size_t ROOK_BLOCK_COMBS_COUNT = 1 << ROOK_MASK_SIZE;
 
 constexpr bool can_add(Square s, Direction d) {
-	return s + d < 64 and s + d >= 0 and abs(rank(s + d) - rank(s)) <= 1;
+	return s + d < 64 and s + d >= 0 and abs((s + d)%8 - s%8) <= 1;
 }
 consteval Bitboard init_ray_attack(Square s, Direction d, Bitboard blockers) {
 	Bitboard res = 0;
