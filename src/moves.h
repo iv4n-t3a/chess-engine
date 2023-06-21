@@ -2,7 +2,10 @@
 #define MOVES
 
 #include "base.h"
+#include "attack.h"
 
+
+const Move UNINITIALIZED = 0xFFFF;
 
 constexpr MoveType move_type(Move m) {
 	return MoveType(m & 0b11);
@@ -21,15 +24,6 @@ constexpr File file_from(Move m) {
 }
 constexpr File file_to(Move m) {
 	return (m >> 5) & 0b111;
-}
-constexpr Square en_passant_captured(Move m) {
-	return square(file_from(m), side(m) == WHITE ? 5 : 4);
-}
-constexpr Square from_by_file(Move m) {
-	return square(file_from(m), side(m) == WHITE ? 5 : 4);
-}
-constexpr Square to_by_file(Move m) {
-	return square(file_to(m), side(m) == WHITE ? 5 : 4);
 }
 constexpr Piece new_piece(Move m) {
 	return Piece((m >> 9) & 0b111);
@@ -54,8 +48,8 @@ constexpr Move build_castle(CastleType c) {
 inline Square formal_from(Move m) { // not optimised
 	switch (move_type(m)) {
 		case NORMAL: return from(m);
-		case EN_PASSANT: return square(file_from(m), side(m) == WHITE ? 4 : 3);
-		case PROMOTION: return square(file_from(m), side(m) == WHITE ? 6 : 1);
+		case EN_PASSANT: return square(file_from(m), en_passant_rank[side(m)]);
+		case PROMOTION: return square(file_from(m), promotion_rank[side(m)]);
 		case CASTLE:
 			switch (castle_type(m)) {
 				case WHITE_OO: return E1;
@@ -69,8 +63,8 @@ inline Square formal_from(Move m) { // not optimised
 inline Square formal_to(Move m) { // not optimised
 	switch (move_type(m)) {
 		case NORMAL: return to(m);
-		case EN_PASSANT: return square(file_to(m), side(m) == WHITE ? 5 : 2);
-		case PROMOTION: return square(file_to(m), side(m) == WHITE ? 7 : 0);
+		case EN_PASSANT: return square(file_to(m), en_passant_rank[side(m)]) + pawn_direction[side(m)];
+		case PROMOTION: return square(file_to(m), promotion_rank[side(m)]) + pawn_direction[side(m)];
 		case CASTLE:
 			switch (castle_type(m)) {
 				case WHITE_OO: return G1;

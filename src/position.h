@@ -17,18 +17,18 @@ class Position {
 	Side active;
 	State state;
 	CastleRights castlerights;
-	std::vector<Position>* history;
+	/* std::vector<Position>* history; */
 	size_t last_irrevers_move;
 
 public:
 	Position();
 
 	void do_move(Move);
-	void undo_move();
+	Position previous();
 	void generate_pseudolegal_moves(std::vector<Move>& to_generate_in);
 	bool is_legal(Move) const;
 	void report_lack_of_legal_moves();
-	bool operator==(Position other) const;
+	bool operator==(Position) const;
 
 	inline Bitboard get_position(Piece p, Side s) const { return by_type[p] & by_side[s]; }
 	inline Bitboard get_position(Piece p) const { return by_type[p]; }
@@ -48,11 +48,6 @@ protected:
 	void do_castle(Move);
 	void do_en_passant(Move);
 	void do_promotion(Move);
-
-	bool is_legal_normal_move(Move) const;
-	bool is_legal_castle(Move) const;
-	bool is_legal_en_passant(Move) const;
-	bool is_legal_promotion(Move) const;
 
 	void update_history(Move m);
 	void update_state();

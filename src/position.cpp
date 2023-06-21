@@ -44,20 +44,14 @@ void Position::do_move(Move m) {
 
 	update_castle_rights();
 	update_to_en_passant(m);
-
 	/* update_history(m); */
 	/* update_state(); */
 }
-void Position::undo_move() {
-	*this = (*history)[history->size() - 1];
+Position Position::previous() {
+	/* return (*history)[history->size() - 1]; */
 }
 bool Position::is_legal(Move m) const {
-	switch (move_type(m)) {
-		case NORMAL: return is_legal_normal_move(m);
-		case CASTLE: return is_legal_castle(m);
-		case EN_PASSANT: return is_legal_en_passant(m);
-		case PROMOTION: return is_legal_promotion(m);
-	};
+	return true;
 }
 void Position::report_lack_of_legal_moves() {
 	if (state == CHECK)
@@ -103,13 +97,16 @@ void Position::generate_castles(std::vector<Move>& g) {
 	}
 }
 void Position::generate_en_passants(std::vector<Move>& g) {
-	if ((1ull << to_en_passant) & (get_position(PAWN, active) >> WEST) & ~FILE_H)
-		g.push_back( build_en_passant(rank(to_en_passant) - 1, rank(to_en_passant), active) );
-	if ((1ull << to_en_passant) & (get_position(PAWN, active) << WEST) & ~FILE_A)
-		g.push_back( build_en_passant(rank(to_en_passant) + 1, rank(to_en_passant), active) );
+	/* std::cout << (int)to_en_passant << std::endl; */
+	/* if ((1ull << to_en_passant) & (get_position(PAWN, active) >> WEST) & ~FILE_H) { */
+	/* 	std::cout << int(rank(to_en_passant) - 1) << " " << (int)rank(to_en_passant) << std::endl; */
+	/* 	g.push_back( build_en_passant(rank(to_en_passant) + 1, rank(to_en_passant), active) ); */
+	/* } if ((1ull << to_en_passant) & (get_position(PAWN, active) << WEST) & ~FILE_A) { */
+	/* 	std::cout << int(rank(to_en_passant) + 1) << " " << (int)rank(to_en_passant) << std::endl; */
+	/* 	g.push_back( build_en_passant(rank(to_en_passant) - 1, rank(to_en_passant), active) ); */
+	/* } */
 }
 void Position::generate_promotions(std::vector<Move>& g) {
-
 }
 void Position::generate_moves_by_attack(Square from, Bitboard attack, std::vector<Move>& g) {
 	if ( (attack & ~get_position(active)) == 0 )
@@ -142,31 +139,19 @@ void Position::do_castle(Move m) {
 	};
 }
 void Position::do_en_passant(Move m) {
-	move_piece(from_by_file(m), to_by_file(m));
-	erase_piece(square( to_by_file(m), en_passant_rank[side(m)] ));
+	move_piece( square(file_from(m), en_passant_rank[side(m)]), square(file_to(m), en_passant_rank[side(m)]) + pawn_direction[side(m)] );
+	erase_piece(square( file_to(m), en_passant_rank[side(m)] ));
 }
 void Position::do_promotion(Move m) {
-	move_piece(from_by_file(m), to_by_file(m));
-	set_piece(to_by_file(m), new_piece(m), side(m));
-}
-
-bool Position::is_legal_normal_move(Move m) const {
-	return true;
-}
-bool Position::is_legal_castle(Move m) const {
-	return true;
-}
-bool Position::is_legal_en_passant(Move m) const {
-	return true;
-}
-bool Position::is_legal_promotion(Move m) const {
-	return true;
+	erase_piece( square(file_from(m), promotion_rank[side(m)]) );
+	erase_piece( square(file_to(m), promotion_rank[side(m)]) + pawn_direction[side(m)]);
+	set_piece( square(file_to(m), promotion_rank[side(m)]) + pawn_direction[side(m)], new_piece(m), side(m));
 }
 
 void Position::update_history(Move m) {
-	history->push_back(*this);
-	if (move_type(m) == NORMAL and getbit(all, m))
-		last_irrevers_move = history->size();
+	/* history->push_back(*this); */
+	/* if (move_type(m) == NORMAL and getbit(all, m)) */
+	/* 	last_irrevers_move = history->size(); */
 }
 void Position::update_state() {
 	if (is_draw_by_rule50() or is_draw_by_repetitions()) {
@@ -196,14 +181,15 @@ bool Position::is_check() const {
 	return calc_attackers(bsf(get_position(KING, active)), invert(active));
 }
 bool Position::is_draw_by_rule50() const {
-	return history->size() - last_irrevers_move == 50;
+	/* return history->size() - last_irrevers_move == 50; */
+	return false;
 }
 bool Position::is_draw_by_repetitions() const {
-	int c = 0;
-	for (size_t i = last_irrevers_move; i < history->size(); i++)
-		c += *this == (*history)[i - 1];
-	return c == 4;
-
+	/* int c = 0; */
+	/* for (size_t i = last_irrevers_move; i < history->size(); i++) */
+	/* 	c += *this == (*history)[i - 1]; */
+	/* return c == 4; */
+	return false;
 }
 
 Bitboard Position::calc_attackers(Square sq, Side by) const {
@@ -220,7 +206,6 @@ Bitboard Position::calc_pinned() const {
 }
 
 void Position::set_piece(Square sq, Piece p, Side s) {
-	erase_piece(sq);
 	set_1(by_type[p], sq);
 	set_1(by_side[s], sq);
 	set_1(all, sq);

@@ -24,7 +24,9 @@ int main(int argc, char *argv[]) {
 
 	Drawer drw(win, pa, cfg);
 	UI ui(drw, cfg, pa);
-	while (true)
+	for (;;) {
 		ui.player_move();
+		ui.computer_move();
+	}
 	return 0;
 }

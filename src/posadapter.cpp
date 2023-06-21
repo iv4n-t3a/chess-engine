@@ -18,10 +18,6 @@ void PosAdapter::do_move(Move m) {
 	pos.do_move(m);
 	generate_moves();
 }
-void PosAdapter::undo_move() {
-	pos.undo_move();
-	generate_moves();
-}
 SquareContent PosAdapter::at(Square sq) const {
 	if (sq == NONE_SQUARE)
 		return EMPTY;

@@ -31,9 +31,8 @@ public:
 	std::vector<Move> moves_from(Square sq) const;
 	SquareContent at(Square sq) const;
 	void do_move(Move m);
-	void undo_move();
 
-	inline Bitboard get_position() const { return pos.get_position(); }
+	inline Position get_position() const { return pos; }
 	inline State get_state() const { return pos.get_state(); }
 private:
 	void generate_moves();

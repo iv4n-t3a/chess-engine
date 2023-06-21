@@ -3,7 +3,6 @@
 
 #include "base.h"
 #include "bitboard.h"
-#include "moves.h"
 
 static constexpr std::array<Direction, 2> pawn_direction = {
 	NORTH, // WHITE
@@ -12,6 +11,10 @@ static constexpr std::array<Direction, 2> pawn_direction = {
 static constexpr std::array<Rank, 2> en_passant_rank = {
 	5, // WHITE
 	4  // BLACK
+};
+static constexpr std::array<Rank, 2> promotion_rank = {
+	6, // WHITE
+	1  // BLACK
 };
 
 Bitboard calc_pawn_attack(Square sq, Bitboard blockers, Side p);

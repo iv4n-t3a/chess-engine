@@ -92,13 +92,13 @@ constexpr Side invert(Side s) {
 	return Side(1 - s);
 }
 constexpr Rank rank(Square s) {
-	return s / 8;
-}
-constexpr File file(Square s) {
 	return s % 8;
 }
+constexpr File file(Square s) {
+	return s / 8;
+}
 constexpr Square square(File f, Rank r) {
-	return f + r*8;
+	return f*8 + r;
 }
 constexpr bool can_castle(CastleRights r, CastleType t) {
 	return r & (1 << t);

@@ -1,9 +1,9 @@
 #include "config.h"
 #include "drawer.h"
 #include "posadapter.h"
-
-
 #include "moves.h"
+#include "engine.h"
+
 #include "ui.h"
 
 
@@ -31,4 +31,6 @@ void UI::player_move() {
 	}
 }
 void UI::computer_move() {
+	Move m = search(pos.get_position(), 5).first;
+	pos.do_move(m);
 }
