@@ -57,9 +57,8 @@ protected:
 	bool is_draw_by_rule50() const;
 	bool is_draw_by_repetitions() const;
 
-	Bitboard calc_attackers(Square target, Side by) const;
-	Bitboard calc_pinned() const;
-	
+	Bitboard calc_attackers(Square target, Side by, Bitboard blockers) const;
+
 	void set_piece(Square, Piece, Side);
 	void erase_piece(Square);
 	void move_piece(Square, Square);

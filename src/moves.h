@@ -7,6 +7,8 @@
 
 const Move UNINITIALIZED = 0xFFFF;
 
+PosDelta posdelta(Move m);
+
 constexpr MoveType move_type(Move m) {
 	return MoveType(m & 0b11);
 }

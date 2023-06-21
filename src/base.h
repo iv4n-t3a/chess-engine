@@ -88,6 +88,11 @@ enum Direction {
 	SOUTH_WEST = SOUTH + WEST,
 };
 
+struct PosDelta {
+	Bitboard add;
+	Bitboard rm;
+};
+
 constexpr Side invert(Side s) {
 	return Side(1 - s);
 }

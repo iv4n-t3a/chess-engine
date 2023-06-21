@@ -1,5 +1,6 @@
-#include <vector>
 #include <array>
+#include <assert.h>
+#include <vector>
 
 #include "attack.h"
 #include "base.h"
@@ -48,13 +49,15 @@ void Position::do_move(Move m) {
 	update_state();
 }
 bool Position::is_legal(Move m) const {
-	return true;
+	PosDelta pd = posdelta(m);
+	Bitboard next = get_position() & ~pd.rm | pd.add;
+	Square king = bsf(get_position(KING, active));
+	if (move_type(m) == NORMAL and from(m) == king) king = to(m);
+	return not ( calc_attackers(king, invert(active), next) & ~pd.rm );
 }
 void Position::report_lack_of_legal_moves() {
-	if (state == CHECK)
-		state = WIN;
-	else
-		state = DRAW;
+	if (state == CHECK) state = WIN;
+	else state = DRAW;
 }
 Hash Position::hash() const {
 	return
@@ -147,7 +150,7 @@ void Position::do_promotion(Move m) {
 }
 
 void Position::update_history(Move m) {
-	if (move_type(m) == NORMAL and getbit(get_position(), to(m)))
+	if ( move_type(m) == NORMAL and (getbit(get_position(), to(m)) or getbit(get_position(PAWN), from(m))) )
 		history.clear();
 	history.push_back(hash());
 }
@@ -162,7 +165,6 @@ void Position::update_castle_rights() {
 	castlerights &= ~(!getbit(get_position(WHITE), A1) << WHITE_OOO);
 	castlerights &=	~(!getbit(get_position(BLACK), H8) << BLACK_OO);
 	castlerights &=	~(!getbit(get_position(BLACK), A8) << BLACK_OOO);
-
 	castlerights &=	~(0b0011 * !getbit(get_position(WHITE), E1));
 	castlerights &=	~(0b1100 * !getbit(get_position(BLACK), E8));
 }
@@ -174,7 +176,7 @@ void Position::update_to_en_passant(Move m) {
 }
 
 bool Position::is_check() const {
-	return calc_attackers(bsf(get_position(KING, active)), invert(active));
+	return calc_attackers(bsf(get_position(KING, active)), invert(active), all);
 }
 bool Position::is_draw_by_rule50() const {
 	return history.size() == 50;
@@ -186,17 +188,12 @@ bool Position::is_draw_by_repetitions() const {
 	return c == 3;
 }
 
-Bitboard Position::calc_attackers(Square sq, Side by) const {
-	Bitboard blockers = all & ~(1ull << sq);
+Bitboard Position::calc_attackers(Square sq, Side by, Bitboard blockers) const {
 	return
 		calc_knight_attack(sq)                     &  get_position(KNIGHT, by) |
 		calc_bishop_attack(sq, blockers)           & (get_position(BISHOP, by) | get_position(QUEEN, by)) |
-		calc_rook_attack(sq, blockers)             & (get_position(ROOK,   by) | get_position(QUEEN, by)) |
+		calc_rook_attack(sq, blockers)             & (get_position(ROOK, by) | get_position(QUEEN, by)) |
 		calc_pawn_attack(sq, blockers, by)         &  get_position(PAWN, by);
-}
-Bitboard Position::calc_pinned() const {
-	Square sq = bsf(get_position(KING, active));
-	return 0;
 }
 
 void Position::set_piece(Square sq, Piece p, Side s) {
