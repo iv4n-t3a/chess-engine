@@ -47,9 +47,6 @@ void Position::do_move(Move m) {
 	/* update_history(m); */
 	/* update_state(); */
 }
-Position Position::previous() {
-	/* return (*history)[history->size() - 1]; */
-}
 bool Position::is_legal(Move m) const {
 	return true;
 }
@@ -59,17 +56,18 @@ void Position::report_lack_of_legal_moves() {
 	else
 		state = DRAW;
 }
-bool Position::operator==(Position other) const {
+Hash Position::hash() const {
 	return
-		get_position(PAWN) == other.get_position(PAWN) and
-		get_position(BISHOP) == other.get_position(BISHOP) and
-		get_position(KNIGHT) == other.get_position(KNIGHT) and
-		get_position(ROOK) == other.get_position(ROOK) and
-		get_position(QUEEN) == other.get_position(QUEEN) and
-		get_position(KING) == other.get_position(KING) and
-
-		get_position(BLACK) == other.get_position(BLACK);
+		get_position(PAWN)   * 0x2601'2006'1606'2016 +
+		get_position(BISHOP) * 0x1234'5678'90ab'cdef +
+		get_position(KNIGHT) * 0x1984'2280'7770'6660 +
+		get_position(ROOK)   * 0xACDC'ABBA'BABA'DEDA +
+		get_position(QUEEN)  * 0x3141'5926'5358'9793 +
+		get_position(KING)   * 0x2718'2818'2845'9045 +
+		get_position(BLACK)  * 0xD2D4'D7D5'C2C4'DFE4 +
+		active               * 0x1248'1632'6412'8256;
 }
+
 
 void Position::generate_normal_moves(std::vector<Move>& g) {
 	for (Bb_iterator i(get_position(PAWN, active)); i.not_ended(); ++i)
@@ -149,9 +147,9 @@ void Position::do_promotion(Move m) {
 }
 
 void Position::update_history(Move m) {
-	/* history->push_back(*this); */
-	/* if (move_type(m) == NORMAL and getbit(all, m)) */
-	/* 	last_irrevers_move = history->size(); */
+	if (move_type(m) == NORMAL and getbit(all, m))
+		history.clear();
+	history.push_back(hash());
 }
 void Position::update_state() {
 	if (is_draw_by_rule50() or is_draw_by_repetitions()) {
@@ -181,15 +179,13 @@ bool Position::is_check() const {
 	return calc_attackers(bsf(get_position(KING, active)), invert(active));
 }
 bool Position::is_draw_by_rule50() const {
-	/* return history->size() - last_irrevers_move == 50; */
-	return false;
+	return history.size() == 50;
 }
 bool Position::is_draw_by_repetitions() const {
-	/* int c = 0; */
-	/* for (size_t i = last_irrevers_move; i < history->size(); i++) */
-	/* 	c += *this == (*history)[i - 1]; */
-	/* return c == 4; */
-	return false;
+	int c = 0;
+	for (Hash h : history)
+		c += hash() == h;
+	return c == 3;
 }
 
 Bitboard Position::calc_attackers(Square sq, Side by) const {

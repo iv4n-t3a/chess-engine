@@ -17,8 +17,7 @@ class Position {
 	Side active;
 	State state;
 	CastleRights castlerights;
-	/* std::vector<Position>* history; */
-	size_t last_irrevers_move;
+	std::vector<Hash> history;
 
 public:
 	Position();
@@ -28,7 +27,7 @@ public:
 	void generate_pseudolegal_moves(std::vector<Move>& to_generate_in);
 	bool is_legal(Move) const;
 	void report_lack_of_legal_moves();
-	bool operator==(Position) const;
+	Hash hash() const;
 
 	inline Bitboard get_position(Piece p, Side s) const { return by_type[p] & by_side[s]; }
 	inline Bitboard get_position(Piece p) const { return by_type[p]; }
@@ -60,7 +59,7 @@ protected:
 
 	Bitboard calc_attackers(Square target, Side by) const;
 	Bitboard calc_pinned() const;
-
+	
 	void set_piece(Square, Piece, Side);
 	void erase_piece(Square);
 	void move_piece(Square, Square);
