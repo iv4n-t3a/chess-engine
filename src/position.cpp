@@ -34,6 +34,7 @@ void Position::generate_pseudolegal_moves(std::vector<Move>& g) {
 
 void Position::do_move(Move m) {
 	active = invert(active);
+	update_history(m); // must be used before aplaying move
 
 	switch (move_type(m)) {
 		case NORMAL: do_normal_move(m); break;
@@ -44,8 +45,7 @@ void Position::do_move(Move m) {
 
 	update_castle_rights();
 	update_to_en_passant(m);
-	/* update_history(m); */
-	/* update_state(); */
+	update_state();
 }
 bool Position::is_legal(Move m) const {
 	return true;
@@ -147,17 +147,15 @@ void Position::do_promotion(Move m) {
 }
 
 void Position::update_history(Move m) {
-	if (move_type(m) == NORMAL and getbit(all, m))
+	if (move_type(m) == NORMAL and getbit(get_position(), to(m)))
 		history.clear();
 	history.push_back(hash());
 }
 void Position::update_state() {
-	if (is_draw_by_rule50() or is_draw_by_repetitions()) {
-		state = DRAW;
-		return;
-	}
-	if (is_check())
-		state = CHECK;
+	if (state == CHECK) state = PLAYING;
+
+	if (is_draw_by_rule50() or is_draw_by_repetitions()) state = DRAW;
+	else if (is_check()) state = CHECK;
 }
 void Position::update_castle_rights() {
 	castlerights &=	~(!getbit(get_position(WHITE), H1) << WHITE_OO);
@@ -191,10 +189,10 @@ bool Position::is_draw_by_repetitions() const {
 Bitboard Position::calc_attackers(Square sq, Side by) const {
 	Bitboard blockers = all & ~(1ull << sq);
 	return
-		calc_knight_attack(sq) & get_position(KNIGHT, by) |
-		calc_bishop_attack(sq, blockers) & (get_position(BISHOP, by) | get_position(QUEEN, by)) |
-		calc_rook_attack  (sq, blockers) & (get_position(ROOK,   by) | get_position(QUEEN, by)) |
-		calc_pawn_attack(sq, blockers, invert(by)) & get_position(PAWN, by);
+		calc_knight_attack(sq)                     &  get_position(KNIGHT, by) |
+		calc_bishop_attack(sq, blockers)           & (get_position(BISHOP, by) | get_position(QUEEN, by)) |
+		calc_rook_attack(sq, blockers)             & (get_position(ROOK,   by) | get_position(QUEEN, by)) |
+		calc_pawn_attack(sq, blockers, by)         &  get_position(PAWN, by);
 }
 Bitboard Position::calc_pinned() const {
 	Square sq = bsf(get_position(KING, active));

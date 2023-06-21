@@ -34,6 +34,7 @@ public:
 
 	inline Position get_position() const { return pos; }
 	inline State get_state() const { return pos.get_state(); }
+	inline Side get_active() const { return pos.get_active(); }
 private:
 	void generate_moves();
 };
