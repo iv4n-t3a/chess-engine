@@ -160,10 +160,8 @@ void Position::update_history(Move m) {
 	history.push_back(hash());
 }
 void Position::update_state() {
-	if (state == CHECK) state = PLAYING;
-
-	if (is_draw_by_rule50() or is_draw_by_repetitions()) state = DRAW;
-	else if (is_check()) state = CHECK;
+	if (state == CHECK and not is_check()) state = PLAYING;
+	if (is_draw_by_rule50()) state = DRAW;
 }
 void Position::update_castle_rights() {
 	castlerights &=	~(!getbit(get_position(WHITE), H1) << WHITE_OO);
