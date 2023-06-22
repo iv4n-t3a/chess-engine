@@ -49,6 +49,7 @@ void Position::do_move(Move m) {
 	update_state();
 }
 bool Position::is_legal(Move m) const {
+	if (move_type(m) == PROMOTION) return true;
 	PosDelta pd = posdelta(m);
 	Bitboard next = get_position() & ~pd.rm | pd.add;
 	Square king = bsf(get_position(KING, active));
@@ -67,13 +68,13 @@ Hash Position::hash() const {
 		get_position(ROOK)   * 0xACDC'ABBA'BABA'DEDA +
 		get_position(QUEEN)  * 0x3141'5926'5358'9793 +
 		get_position(KING)   * 0x2718'2818'2845'9045 +
-		get_position(BLACK)  * 0xD2D4'D7D5'C2C4'DFE4 +
+		get_position(BLACK)  * 0xD2D4'D7D5'C2C4'E7E5 +
 		active               * 0x1248'1632'6412'8256;
 }
 
 
 void Position::generate_normal_moves(std::vector<Move>& g) {
-	for (Bb_iterator i(get_position(PAWN, active)); i.not_ended(); ++i)
+	for (Bb_iterator i( get_position(PAWN, active) & ~rankmasks[promotion_rank[active]] ); i.not_ended(); ++i)
 		generate_moves_by_attack(*i, calc_pawn_attack(*i, get_position(), active), g);
 	for (Bb_iterator i(get_position(BISHOP, active) | get_position(QUEEN, active)); i.not_ended(); ++i)
 		generate_moves_by_attack(*i, calc_bishop_attack(*i, get_position()), g);
@@ -108,11 +109,20 @@ void Position::generate_en_passants(std::vector<Move>& g) {
 	/* } */
 }
 void Position::generate_promotions(std::vector<Move>& g) {
+	Bitboard passed_pawns = get_position(PAWN, active) & rankmasks[promotion_rank[active]];
+	for (Bb_iterator from(passed_pawns); from.not_ended(); ++from) {
+		Bitboard attack = calc_pawn_attack(*from, get_position(), active) & ~get_position(active);
+		if (not attack) continue;
+		for (Bb_iterator to(attack); to.not_ended(); ++to) {
+			for (Piece p : { QUEEN, KNIGHT, ROOK, BISHOP })
+				g.push_back( build_promotion(file(*from), file(*to), p, active) );
+		}
+	}
 }
 void Position::generate_moves_by_attack(Square from, Bitboard attack, std::vector<Move>& g) {
-	if ( (attack & ~get_position(active)) == 0 )
-		return;
-	for (Bb_iterator to(attack & ~get_position(active)); to.not_ended(); ++to)
+	attack &= ~get_position(active);
+	if (not attack) return;
+	for (Bb_iterator to(attack); to.not_ended(); ++to)
 		g.push_back( build_move(from, *to) );
 }
 

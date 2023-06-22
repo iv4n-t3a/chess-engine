@@ -29,12 +29,26 @@ constexpr PosDelta castle_delta(Move m) {
 	}
 	return res;
 };
+constexpr PosDelta en_passant_delta(Move m) {
+	PosDelta res;
+	res.rm = (1ull << square(file_from(m), en_passant_rank[side(m)]));
+	res.add = 1ull << (square(file_to(m), en_passant_rank[side(m)]) + pawn_direction[side(m)]);
+	return res;
+}
+constexpr PosDelta promotion_delta(Move m) {
+	PosDelta res;
+	res.rm = 1ull << square(file_from(m), promotion_rank[side(m)]);
+	res.add = 1ull << (square(file_to(m), promotion_rank[side(m)]) + pawn_direction[side(m)]);
+	return res;
+}
 constexpr std::array<PosDelta, std::numeric_limits<Move>::max()> init_pd() {
 	std::array<PosDelta, std::numeric_limits<Move>::max()> res;
 	for (Move m = 0; m < std::numeric_limits<Move>::max(); m++) {
 		switch (move_type(m)) {
 			case NORMAL: res[m] = normal_delta(m); break;
 			case CASTLE: res[m] = castle_delta(m); break;
+			case EN_PASSANT: res[m] = en_passant_delta(m); break;
+			case PROMOTION: res[m] = promotion_delta(m); break;
 		}
 	}
 	return res;

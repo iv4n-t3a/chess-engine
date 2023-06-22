@@ -46,6 +46,9 @@ enum RankMask : Bitboard {
 	RANK_7 = RANK_1 << 8*6,
 	RANK_8 = RANK_1 << 8*7,
 };
+const std::array<Bitboard, 8> filemasks = { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H };
+const std::array<Bitboard, 8> rankmasks = { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8 };
+
 enum Side {
 	WHITE,
 	BLACK,
@@ -97,13 +100,13 @@ constexpr Side invert(Side s) {
 	return Side(1 - s);
 }
 constexpr Rank rank(Square s) {
-	return s % 8;
-}
-constexpr File file(Square s) {
 	return s / 8;
 }
+constexpr File file(Square s) {
+	return s % 8;
+}
 constexpr Square square(File f, Rank r) {
-	return f*8 + r;
+	return f + r*8;
 }
 constexpr bool can_castle(CastleRights r, CastleType t) {
 	return r & (1 << t);
