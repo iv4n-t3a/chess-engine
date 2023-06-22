@@ -184,7 +184,7 @@ bool Position::is_check() const {
 	return calc_attackers(bsf(get_position(KING, active)), invert(active), all);
 }
 bool Position::is_draw_by_rule50() const {
-	return history.size() == 50;
+	return history.size() == 100; // 100 reversible half moves equals draw by rule50
 }
 bool Position::is_draw_by_repetitions() const {
 	int c = 0;
