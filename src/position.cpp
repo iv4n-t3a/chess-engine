@@ -53,7 +53,7 @@ bool Position::is_legal(Move m) const {
 	Bitboard next = get_position() & ~pd.rm | pd.add;
 	Square king = bsf(get_position(KING, active));
 	if (move_type(m) == NORMAL and from(m) == king) king = to(m);
-	return not ( calc_attackers(king, invert(active), next) & ~pd.rm );
+	return not ( calc_attackers(king, invert(active), next) & ~pd.add );
 }
 void Position::report_lack_of_legal_moves() {
 	if (state == CHECK) state = WIN;
