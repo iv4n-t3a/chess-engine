@@ -198,7 +198,7 @@ Bitboard Position::calc_attackers(Square sq, Side by, Bitboard blockers) const {
 		calc_knight_attack(sq)                     &  get_position(KNIGHT, by) |
 		calc_bishop_attack(sq, blockers)           & (get_position(BISHOP, by) | get_position(QUEEN, by)) |
 		calc_rook_attack(sq, blockers)             & (get_position(ROOK, by) | get_position(QUEEN, by)) |
-		calc_pawn_attack(sq, blockers, by)         &  get_position(PAWN, by);
+		calc_pawn_attack(sq, blockers, invert(by)) &  get_position(PAWN, by);
 }
 
 void Position::set_piece(Square sq, Piece p, Side s) {
