@@ -44,10 +44,6 @@ void PosAdapter::generate_moves() {
 	moves.clear();
 
 	for (Move m : pseudolegal)
-		if (move_type(m) == EN_PASSANT)
-			std::cout << (int)formal_from(m) << " " << (int)formal_to(m) << std::endl;
-
-	for (Move m : pseudolegal)
 		if (pos.is_legal(m))
 			moves.push_back(m);
 

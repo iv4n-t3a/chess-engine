@@ -37,7 +37,7 @@ constexpr PosDelta en_passant_delta(Move m) {
 }
 constexpr PosDelta promotion_delta(Move m) {
 	PosDelta res;
-	res.rm = 1ull << square(file_from(m), promotion_rank[side(m)]);
+	res.rm = ( 1ull << square(file_from(m), promotion_rank[side(m)]) ) | ( 1ull << square(file_to(m), promotion_rank[side(m)]) );
 	res.add = 1ull << (square(file_to(m), promotion_rank[side(m)]) + pawn_direction[side(m)]);
 	return res;
 }

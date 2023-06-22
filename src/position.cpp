@@ -49,7 +49,6 @@ void Position::do_move(Move m) {
 	update_state();
 }
 bool Position::is_legal(Move m) const {
-	if (move_type(m) == PROMOTION) return true;
 	PosDelta pd = posdelta(m);
 	Bitboard next = get_position() & ~pd.rm | pd.add;
 	Square king = bsf(get_position(KING, active));
@@ -99,14 +98,10 @@ void Position::generate_castles(std::vector<Move>& g) {
 	}
 }
 void Position::generate_en_passants(std::vector<Move>& g) {
-	/* std::cout << (int)to_en_passant << std::endl; */
-	/* if ((1ull << to_en_passant) & (get_position(PAWN, active) >> WEST) & ~FILE_H) { */
-	/* 	std::cout << int(rank(to_en_passant) - 1) << " " << (int)rank(to_en_passant) << std::endl; */
-	/* 	g.push_back( build_en_passant(rank(to_en_passant) + 1, rank(to_en_passant), active) ); */
-	/* } if ((1ull << to_en_passant) & (get_position(PAWN, active) << WEST) & ~FILE_A) { */
-	/* 	std::cout << int(rank(to_en_passant) + 1) << " " << (int)rank(to_en_passant) << std::endl; */
-	/* 	g.push_back( build_en_passant(rank(to_en_passant) - 1, rank(to_en_passant), active) ); */
-	/* } */
+	if ((1ull << to_en_passant) & (get_position(PAWN, active) >> WEST) & ~FILE_H)
+		g.push_back( build_en_passant(rank(to_en_passant) + 1, rank(to_en_passant), active) );
+	if ((1ull << to_en_passant) & (get_position(PAWN, active) << WEST) & ~FILE_A)
+		g.push_back( build_en_passant(rank(to_en_passant) - 1, rank(to_en_passant), active) );
 }
 void Position::generate_promotions(std::vector<Move>& g) {
 	Bitboard passed_pawns = get_position(PAWN, active) & rankmasks[promotion_rank[active]];

@@ -21,7 +21,6 @@ void UI::player_move() {
 
 		to = drw.pick_square();
 		for (Move m : moves) {
-			/* if (move_type(m) == PROMOTION) std::cout << (int)new_piece(m) << " jopa" << std::endl; */
 			if (formal_to(m) == to) {
 				pos.do_move(m);
 				return;
