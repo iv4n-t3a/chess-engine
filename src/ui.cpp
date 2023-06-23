@@ -1,6 +1,5 @@
 #include "config.h"
 #include "drawer.h"
-#include "posadapter.h"
 #include "moves.h"
 #include "engine.h"
 

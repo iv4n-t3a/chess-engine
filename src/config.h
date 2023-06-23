@@ -4,8 +4,7 @@
 #include <iostream>
 #include <array>
 
-#include "posadapter.h"
-
+#include "base.h"
 
 enum PlayerType {
     HUMAN,
@@ -26,14 +25,15 @@ struct Config {
 		wight,
 		height;
 	std::string etcdir;
-	std::array<Color, 2> square_color;
-	Color
-			inbordered_color,
-			background_color;
-	std::array<std::string, SQ_COND_COUNT> texture_names;
 
-	inline std::string get_texture_path(SquareContent sc) {
-		return etcdir + texture_names[sc];
+	std::array<Color, 2> square_color;
+	/* std::array<Color, 2> inbordered_color; */
+	Color background_color, inbordered_color;
+
+	std::array<std::array<std::string, 7>, 3> texture_names;
+
+	inline std::string get_texture_path(Piece p, Side s) {
+		return etcdir + texture_names[s][p];
 	}
 };
 

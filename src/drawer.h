@@ -9,7 +9,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "base.h"
-#include "posadapter.h"
+#include "position.h"
 #include "config.h"
 
 
