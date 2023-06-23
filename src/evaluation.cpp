@@ -6,16 +6,16 @@ const Evaluation material_k = 1000;
 const Evaluation mobility_k = 10;
 const Evaluation missed_castle_k = 100;
 const Evaluation pawn_shield_k = 100;
-const Evaluation double_bishop_k = 10;
+const Evaluation double_bishop_k = 50;
 const Evaluation bishop_on_main_diagonal_k = 10;
-const Evaluation double_pawn_k = 30;
+const Evaluation double_pawn_k = 40;
 const Evaluation connected_pawn_k = 30;
 const Evaluation connected_rooks_k = 80;
 
-const Evaluation knight_mobility_k = 20;
-const Evaluation bishop_mobility_k = 10;
+const Evaluation knight_mobility_k = 40;
+const Evaluation bishop_mobility_k = 12;
 const Evaluation rook_mobility_k = 4;
-const Evaluation queen_mobility_k = 3;
+const Evaluation queen_mobility_k = 2;
 
 Evaluation material(Position const&);
 Evaluation mobility(Position const&);
