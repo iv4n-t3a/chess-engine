@@ -2,13 +2,20 @@
 
 #include "engine.h"
 
+#include <unordered_map>
+
 
 void sort_moves(std::vector<Move>&, Position const&);
 Evaluation evaluate_move(Move, Position const&);
+std::pair<Move, Evaluation> search(Position, Depth, AB, bool only_capture=false);
 
-std::pair<Move, Evaluation> search(Position p, Depth soft_limit, Depth hard_limit, Depth left, AB ab, bool only_capture) {
-	if ((p.get_state() == CHECK or only_capture) and left == soft_limit and soft_limit + 1 != hard_limit) soft_limit++; // check and capture reinwall
-	if (left == soft_limit) return {UNINITIALIZED, evaluate(p)};
+Move search(Position p, Depth d) {
+	return search(p, d, AB()).first; 
+}
+
+std::pair<Move, Evaluation> search(Position p, Depth d, AB ab, bool only_capture) {
+	if ((p.get_state() == CHECK or only_capture) and d == 0) d++; // check and capture reinwall
+	if (d == 0) return {UNINITIALIZED, evaluate(p)};
 
 	std::vector<Move> moves;
 	moves.reserve(218);
@@ -25,7 +32,7 @@ std::pair<Move, Evaluation> search(Position p, Depth soft_limit, Depth hard_limi
 
 		if (only_capture and popcount(copy.get_position()) == popcount(p.get_position())) continue;
 
-		Evaluation e = search(copy, soft_limit, hard_limit, left+1, ab, popcount(copy.get_position()) != popcount(p.get_position()) and left == soft_limit or only_capture).second;
+		Evaluation e = search(copy, d-1, ab, popcount(copy.get_position()) != popcount(p.get_position()) and d == 1 or only_capture).second;
 		if ( e > best_found.second and p.get_active() == WHITE ) {
 			best_found = {m, e};
 			ab.alpha = e;

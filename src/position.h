@@ -28,7 +28,7 @@ public:
 
 	void do_move(Move);
 	Position previous();
-	void generate_pseudolegal_moves(std::vector<Move>& to_generate_in);
+	void generate_pseudolegal_moves(std::vector<Move>& to_generate_in) const;
 	bool is_legal(Move) const;
 	void report_lack_of_legal_moves();
 	inline Hash hash() const { return hasher.get(); };
@@ -46,11 +46,11 @@ public:
 	inline bool get_castle_happened() const { return castle_happened; };
 
 protected:
-	void generate_normal_moves(std::vector<Move>& to_generate_in);
-	void generate_castles(std::vector<Move>& to_generate_in);
-	void generate_en_passants(std::vector<Move>& to_generate_in);
-	void generate_promotions(std::vector<Move>& to_generate_in);
-	void generate_moves_by_attack(Square from, Bitboard attack, std::vector<Move>& to_generate_in);
+	void generate_normal_moves(std::vector<Move>& to_generate_in) const;
+	void generate_castles(std::vector<Move>& to_generate_in) const;
+	void generate_en_passants(std::vector<Move>& to_generate_in) const;
+	void generate_promotions(std::vector<Move>& to_generate_in) const;
+	void generate_moves_by_attack(Square from, Bitboard attack, std::vector<Move>& to_generate_in) const;
 
 	void do_normal_move(Move);
 	void do_castle(Move);

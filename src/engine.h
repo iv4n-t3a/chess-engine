@@ -1,6 +1,9 @@
 #ifndef ENGINE
 #define ENGINE
 
+#include <unordered_map>
+#include <tuple>
+
 #include "position.h"
 
 typedef int64_t Evaluation;
@@ -27,8 +30,10 @@ const std::array<Evaluation, 7> piece_cost = {
 	0, // NONE_PIECE
 };
 
+typedef std::unordered_map< Hash, std::tuple<Move, Evaluation, Depth> > HashTable;
+
 
 Evaluation evaluate(Position const&); // defined in evaluation.cpp
-std::pair<Move, Evaluation> search(Position, Depth soft_limit, Depth hard_limit, Depth left = 0, AB ab = AB(), bool only_capture=false); // defined in search.cpp
+Move search(Position, Depth); // defined in search.cpp
 
 #endif // #ifndef ENGINE

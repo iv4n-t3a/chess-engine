@@ -28,7 +28,7 @@ Position::Position() {
 	history.reserve(100);
 }
 
-void Position::generate_pseudolegal_moves(std::vector<Move>& g) {
+void Position::generate_pseudolegal_moves(std::vector<Move>& g) const {
 	generate_normal_moves(g);
 	generate_castles(g);
 	generate_en_passants(g);
@@ -64,7 +64,7 @@ void Position::report_lack_of_legal_moves() {
 	else state = DRAW;
 }
 
-void Position::generate_normal_moves(std::vector<Move>& g) {
+void Position::generate_normal_moves(std::vector<Move>& g) const {
 	for (Bb_iterator i( get_position(PAWN, active) & ~rankmasks[promotion_rank[active]] ); i.not_ended(); ++i)
 		generate_moves_by_attack(*i, calc_pawn_attack(*i, get_position(), active), g);
 	for (Bb_iterator i(get_position(BISHOP, active) | get_position(QUEEN, active)); i.not_ended(); ++i)
@@ -76,7 +76,7 @@ void Position::generate_normal_moves(std::vector<Move>& g) {
 	for (Bb_iterator i(get_position(KING, active)); i.not_ended(); ++i)
 		generate_moves_by_attack(*i, calc_king_attack(*i), g);
 }
-void Position::generate_castles(std::vector<Move>& g) {
+void Position::generate_castles(std::vector<Move>& g) const {
 	if (state == CHECK) return;
 
 	if (active == WHITE) {
@@ -91,13 +91,13 @@ void Position::generate_castles(std::vector<Move>& g) {
 			g.push_back(build_castle(BLACK_OOO));
 	}
 }
-void Position::generate_en_passants(std::vector<Move>& g) {
+void Position::generate_en_passants(std::vector<Move>& g) const {
 	if ((1ull << to_en_passant) & (get_position(PAWN, active) >> WEST) & ~FILE_H)
 		g.push_back( build_en_passant(rank(to_en_passant) + 1, rank(to_en_passant), active) );
 	if ((1ull << to_en_passant) & (get_position(PAWN, active) << WEST) & ~FILE_A)
 		g.push_back( build_en_passant(rank(to_en_passant) - 1, rank(to_en_passant), active) );
 }
-void Position::generate_promotions(std::vector<Move>& g) {
+void Position::generate_promotions(std::vector<Move>& g) const {
 	Bitboard passed_pawns = get_position(PAWN, active) & rankmasks[promotion_rank[active]];
 	for (Bb_iterator from(passed_pawns); from.not_ended(); ++from) {
 		Bitboard attack = calc_pawn_attack(*from, get_position(), active) & ~get_position(active);
@@ -108,7 +108,7 @@ void Position::generate_promotions(std::vector<Move>& g) {
 		}
 	}
 }
-void Position::generate_moves_by_attack(Square from, Bitboard attack, std::vector<Move>& g) {
+void Position::generate_moves_by_attack(Square from, Bitboard attack, std::vector<Move>& g) const {
 	attack &= ~get_position(active);
 	if (not attack) return;
 	for (Bb_iterator to(attack); to.not_ended(); ++to)
