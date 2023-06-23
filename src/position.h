@@ -33,8 +33,8 @@ public:
 	void report_lack_of_legal_moves();
 	inline Hash hash() const { return hasher.get(); };
 
-	Piece piece_at(Square);
-	Side side_at(Square);
+	Piece piece_at(Square) const;
+	Side side_at(Square) const;
 
 	inline Bitboard get_position(Piece p, Side s) const { return by_type[p] & by_side[s]; }
 	inline Bitboard get_position(Piece p) const { return by_type[p]; }

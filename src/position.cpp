@@ -194,12 +194,12 @@ Bitboard Position::calc_attackers(Square sq, Side by, Bitboard blockers) const {
 		calc_pawn_attack(sq, blockers, invert(by)) &  get_position(PAWN, by);
 }
 
-Piece Position::piece_at(Square sq) {
+Piece Position::piece_at(Square sq) const {
 	for (Piece p : { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING })
 		if (getbit(by_type[p], sq)) return p;
 	return NONE_PIECE;
 }
-Side Position::side_at(Square sq) {
+Side Position::side_at(Square sq) const {
 	for (Side s : { WHITE, BLACK })
 		if (getbit(by_side[s], sq)) return s;
 	return NONE_SIDE;

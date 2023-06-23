@@ -17,6 +17,16 @@ struct AB {
 	Evaluation beta = best_ev[WHITE];
 };
 
+const std::array<Evaluation, 7> piece_cost = {
+	1, // PAWN
+	3, // BISHOP
+	3, // KNIGHT
+	5, // ROOK
+	9, // QUEEN
+	0, // KING
+	0, // NONE_PIECE
+};
+
 
 Evaluation evaluate(Position const&); // defined in evaluation.cpp
 std::pair<Move, Evaluation> search(Position, Depth soft_limit, Depth hard_limit, Depth left = 0, AB ab = AB(), bool only_capture=false); // defined in search.cpp
