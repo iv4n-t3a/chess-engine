@@ -188,6 +188,7 @@ bool Position::is_draw_by_repetitions() const {
 
 Bitboard Position::calc_attackers(Square sq, Side by, Bitboard blockers) const {
 	return
+		calc_king_attack(sq)                       &  get_position(KING, by) |
 		calc_knight_attack(sq)                     &  get_position(KNIGHT, by) |
 		calc_bishop_attack(sq, blockers)           & (get_position(BISHOP, by) | get_position(QUEEN, by)) |
 		calc_rook_attack(sq, blockers)             & (get_position(ROOK, by) | get_position(QUEEN, by)) |
