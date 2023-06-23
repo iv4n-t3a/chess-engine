@@ -42,29 +42,28 @@ void Drawer::redraw() {
 
 	window.display();
 }
-Square Drawer::pick_square() {
+Event Drawer::wait_event() {
 	sf::Event event;
-	while (window.isOpen() and window.pollEvent(event)) {
+	while (window.isOpen() and window.waitEvent(event)) {
 		if (event.type == sf::Event::Closed) {
 			window.close();
 			exit(0);
 		}
-		if (event.type != sf::Event::MouseButtonPressed)
-			continue;
-
-		int x = event.mouseButton.x,
-			y = event.mouseButton.y;
-
-		if (x >= square_size*8 or y >= square_size*8)
-			return NONE_SQUARE;
-
-		Square sq = (7 - x/square_size) + 8*(y/square_size);
-		unborder_all();
-		border(sq);
-		redraw();
-		return sq;
+		if (event.type == sf::Event::MouseButtonPressed) {
+			int x = event.mouseButton.x;
+			int y = event.mouseButton.y;
+			if (x >= square_size*8 or y >= square_size*8)
+				return { PICKSQ, NONE_SQUARE };
+			Square sq = (7 - x/square_size) + 8*(y/square_size);
+			unborder_all();
+			border(sq);
+			redraw();
+			return { PICKSQ, sq };
+		} else if (event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::U) {
+			return { UNDOMOVE, NONE_SQUARE };
+		}
 	}
-	return NONE_SQUARE;
+	return { NONE_EVENT, NONE_SQUARE };
 }
 
 sf::Color Drawer::to_sf_color(Color c) {

@@ -11,7 +11,8 @@ UI::UI(Drawer& d, Position& p, Config c) : drw(d), pos(p), cfg(c) {
 
 void UI::player_move() {
 	Square from, to;
-	from = drw.pick_square();
+	Event e;
+	from = NONE_SQUARE;
 
 	std::vector<Move> pseudolegal_moves, moves;
 	pos.generate_pseudolegal_moves(pseudolegal_moves);
@@ -28,9 +29,25 @@ void UI::player_move() {
 			if (formal_from(m) == from) drw.border(formal_to(m));
 		drw.redraw();
 
-		to = drw.pick_square();
+		e = drw.wait_event();
+		switch (e.type) {
+			case UNDOMOVE:
+				if (history.size()) {
+					pos = history[history.size() - 1];
+					history.pop_back();
+				}
+				player_move();
+				return;
+			case PICKSQ:
+				to = e.picked;
+				break;
+			case NONE_EVENT:
+				break;
+		}
+
 		for (Move m : moves) {
 			if (formal_from(m) == from and formal_to(m) == to) {
+				history.push_back(pos);
 				pos.do_move(m);
 				drw.redraw();
 				return;

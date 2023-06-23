@@ -9,6 +9,7 @@ class UI {
 	Drawer& drw;
 	Config cfg;
 	Position& pos;
+	std::vector<Position> history;
 public:
 	UI(Drawer& d, Position& p, Config c);
 	void player_move();

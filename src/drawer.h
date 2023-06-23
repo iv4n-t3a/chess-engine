@@ -13,6 +13,16 @@
 #include "config.h"
 
 
+enum EventType {
+	PICKSQ,
+	UNDOMOVE,
+	NONE_EVENT
+};
+struct Event {
+	EventType type = NONE_EVENT;
+	Square picked = NONE_SQUARE;
+};
+
 class Drawer {
 	sf::RenderWindow& window;
 	int square_size;
@@ -22,7 +32,7 @@ class Drawer {
 	Bitboard bordered = 0;
 public:
 	Drawer(sf::RenderWindow&, Position const&, Config c);
-	Square pick_square();
+	Event wait_event();
 	void redraw();
 
 	inline void border(Square sq) { set_1(bordered, sq); }
