@@ -17,8 +17,8 @@ class Position {
 	Side active;
 	State state;
 	CastleRights castlerights;
+	CastleRights castle_happened;
 	std::vector<Hash> history;
-
 public:
 	Position();
 
@@ -35,6 +35,8 @@ public:
 	inline Bitboard get_position() const { return all; }
 	inline Side get_active() const { return active; }
 	inline State get_state() const { return state; }
+	inline bool get_castle_rights() const { return castlerights; };
+	inline bool get_castle_happened() const { return castle_happened; };
 
 protected:
 	void generate_normal_moves(std::vector<Move>& to_generate_in);

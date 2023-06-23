@@ -23,6 +23,7 @@ Position::Position() {
 	all = 0xffff'0000'0000'ffff;
 	active = WHITE;
 	castlerights = 0b1111;
+	castle_happened = 0;
 	to_en_passant = NONE_SQUARE;
 }
 
@@ -125,6 +126,7 @@ void Position::do_normal_move(Move m) {
 	move_piece(from(m), to(m));
 }
 void Position::do_castle(Move m) {
+	castle_happened |= 1 << castle_type(m);
 	switch(castle_type(m)) {
 		case WHITE_OO:
 			move_piece(E1, G1);
