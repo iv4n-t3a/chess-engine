@@ -14,14 +14,14 @@
 
 
 class Drawer {
-	PosAdapter const& pos;
 	sf::RenderWindow& window;
 	int square_size;
+	Position const& pos;
 	Config cfg;
-	std::array<sf::Texture, SQ_COND_COUNT> textures;
+	std::array< std::array<sf::Texture, 6>, 2 >textures;
 	Bitboard bordered = 0;
 public:
-	Drawer(sf::RenderWindow&, PosAdapter const&, Config c);
+	Drawer(sf::RenderWindow&, Position const&, Config c);
 	Square pick_square();
 	void redraw();
 

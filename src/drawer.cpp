@@ -11,34 +11,35 @@
 #include "drawer.h"
 
 
-Drawer::Drawer(sf::RenderWindow& w, PosAdapter const& p, Config c) : window(w), pos(p), cfg(c) {
+Drawer::Drawer(sf::RenderWindow& w, Position const& p, Config c) : window(w), pos(p), cfg(c) {
 	sf::Vector2u size = w.getSize();
 	square_size = std::min(size.x, size.y) / 8;
-	for (int i = 0; i < SQ_COND_COUNT; i++) {
-		if (i == EMPTY) continue;
-		textures[i].loadFromFile(  cfg.get_texture_path( (SquareContent)i )  );
-	}
+	for (Side s : { WHITE, BLACK })
+		for (Piece p : { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING })
+			textures[s][p].loadFromFile( cfg.get_texture_path(p, s) );
 	redraw();
 }
 void Drawer::redraw() {
 	window.clear( to_sf_color(cfg.background_color) );
 
-	for (Square s = 0; s < 64; s++) {
-		SquareContent sc = pos.at(s);
+	for (Square sq = 0; sq < 64; sq++) {
+		Piece p = pos.piece_at(sq);
+		Side s = pos.side_at(sq);
 		sf::RectangleShape shape(sf::Vector2f(square_size, square_size));
 
-		if (sc != EMPTY)
-			shape.setTexture( &textures[sc] );
+		if (p != NONE_PIECE)
+			shape.setTexture( &textures[s][p] );
 
 		Bitboard WHITE_SQUARES = 0xaa55'aa55'aa55'aa55;
-		if (getbit(bordered, s))
+
+		if (getbit(bordered, sq))
 			shape.setFillColor( to_sf_color(cfg.inbordered_color) );
-		else if (getbit(WHITE_SQUARES, s))
+		else if (getbit(WHITE_SQUARES, sq))
 			shape.setFillColor( to_sf_color(cfg.square_color[WHITE]) );
 		else
 			shape.setFillColor( to_sf_color(cfg.square_color[BLACK]) );
 
-		shape.setPosition(s%8 * square_size, s/8 * square_size);
+		shape.setPosition((7 - sq%8) * square_size, sq/8 * square_size);
 		window.draw(shape);
 	}
 
@@ -60,7 +61,7 @@ Square Drawer::pick_square() {
 		if (x >= square_size*8 or y >= square_size*8)
 			return NONE_SQUARE;
 
-		Square sq = x/square_size + 8*(y/square_size);
+		Square sq = (7 - x/square_size) + 8*(y/square_size);
 		unborder_all();
 		border(sq);
 		redraw();

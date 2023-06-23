@@ -18,17 +18,17 @@ int main(int argc, char *argv[]) {
 	sf::RenderWindow win(sf::VideoMode(cfg.wight, cfg.height), "CHESS");
 
 	Position p;
-	PosAdapter pa(p);
-
-	Drawer drw(win, pa, cfg);
-	UI ui(drw, cfg, pa);
+	Drawer drw(win, p, cfg);
+	UI ui(drw, p, cfg);
 	for (int i = 1; true; i = (i + 1) % 2) {
-		/* if (i) ui.player_move(); */
-		/* ui.player_move(); */
-		ui.computer_move();
+		/* if(i) ui.player_move(); */
+		/* else ui.computer_move(); */
 
-		if (pa.get_state() == DRAW) std::cout << "Draw!" << std::endl;
-		else if (pa.get_state() == WIN) std::cout << (pa.get_active() == WHITE ? "White " : "Black ") << "win!" << std::endl;
+		ui.player_move();
+		/* ui.computer_move(); */
+
+		if (p.get_state() == DRAW) std::cout << "Draw!" << std::endl;
+		else if (p.get_state() == WIN) std::cout << (p.get_active() == WHITE ? "White " : "Black ") << "win!" << std::endl;
 		else continue;
 
 		return 0;

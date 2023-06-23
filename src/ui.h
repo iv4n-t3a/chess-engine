@@ -9,13 +9,11 @@
 class UI {
 	Drawer& drw;
 	Config cfg;
-	PosAdapter pos;
+	Position& pos;
 public:
-	UI(Drawer& d, Config c, PosAdapter p);
-
+	UI(Drawer& d, Position& p, Config c);
 	void player_move();
 	void computer_move();
-
 private:
 	std::pair<Square, Square> pick_move();
 	Square pick_move(Square from);
