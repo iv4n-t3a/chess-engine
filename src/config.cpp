@@ -27,25 +27,27 @@ Config generate_default_config() {
 	c.square_color[WHITE] = {238, 238, 210};
 	c.square_color[BLACK] = {118, 150, 86};
 
-	c.inbordered_color = {186, 202, 68};
+	c.inbordered_color[WHITE] = {186, 202, 68};
+	c.inbordered_color[BLACK] = {136, 172, 43};
+
 	c.background_color = {33, 32, 47};
 
 
 	std::string ext = "png";
 
-	c.texture_names[WHITE_PAWN] = "white-pawn." + ext;
-	c.texture_names[WHITE_BISHOP] = "white-bishop." + ext;
-	c.texture_names[WHITE_KNIGHT] = "white-knight." + ext;
-	c.texture_names[WHITE_ROOK] = "white-rook." + ext;
-	c.texture_names[WHITE_QUEEN] = "white-queen." + ext;
-	c.texture_names[WHITE_KING] = "white-king." + ext;
+	c.texture_names[WHITE][PAWN] = "white-pawn." + ext;
+	c.texture_names[WHITE][BISHOP] = "white-bishop." + ext;
+	c.texture_names[WHITE][KNIGHT] = "white-knight." + ext;
+	c.texture_names[WHITE][ROOK] = "white-rook." + ext;
+	c.texture_names[WHITE][QUEEN] = "white-queen." + ext;
+	c.texture_names[WHITE][KING] = "white-king." + ext;
 
-	c.texture_names[BLACK_PAWN] = "black-pawn." + ext;
-	c.texture_names[BLACK_BISHOP] = "black-bishop." + ext;
-	c.texture_names[BLACK_KNIGHT] = "black-knight." + ext;
-	c.texture_names[BLACK_ROOK] = "black-rook." + ext;
-	c.texture_names[BLACK_QUEEN] = "black-queen." + ext;
-	c.texture_names[BLACK_KING] = "black-king." + ext;
+	c.texture_names[BLACK][PAWN] = "black-pawn." + ext;
+	c.texture_names[BLACK][BISHOP] = "black-bishop." + ext;
+	c.texture_names[BLACK][KNIGHT] = "black-knight." + ext;
+	c.texture_names[BLACK][ROOK] = "black-rook." + ext;
+	c.texture_names[BLACK][QUEEN] = "black-queen." + ext;
+	c.texture_names[BLACK][KING] = "black-king." + ext;
 
 	return c;
 }

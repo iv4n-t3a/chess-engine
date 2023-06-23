@@ -27,8 +27,8 @@ struct Config {
 	std::string etcdir;
 
 	std::array<Color, 2> square_color;
-	/* std::array<Color, 2> inbordered_color; */
-	Color background_color, inbordered_color;
+	std::array<Color, 2> inbordered_color;
+	Color background_color;
 
 	std::array<std::array<std::string, 7>, 3> texture_names;
 

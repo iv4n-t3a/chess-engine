@@ -32,12 +32,9 @@ void Drawer::redraw() {
 
 		Bitboard WHITE_SQUARES = 0xaa55'aa55'aa55'aa55;
 
-		if (getbit(bordered, sq))
-			shape.setFillColor( to_sf_color(cfg.inbordered_color) );
-		else if (getbit(WHITE_SQUARES, sq))
-			shape.setFillColor( to_sf_color(cfg.square_color[WHITE]) );
-		else
-			shape.setFillColor( to_sf_color(cfg.square_color[BLACK]) );
+		Side sq_color = getbit(WHITE_SQUARES, sq) ? WHITE : BLACK;
+		if (getbit(bordered, sq)) shape.setFillColor( to_sf_color(cfg.inbordered_color[sq_color]) );
+		else shape.setFillColor( to_sf_color(cfg.square_color[sq_color]) );
 
 		shape.setPosition((7 - sq%8) * square_size, sq/8 * square_size);
 		window.draw(shape);
