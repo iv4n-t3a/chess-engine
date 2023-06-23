@@ -3,7 +3,7 @@
 #include "engine.h"
 
 
-std::pair<Move, Evaluation> search(Position p, Depth d) {
+std::pair<Move, Evaluation> search(Position p, Depth d, AB ab) {
 	if (d == 0) return {UNINITIALIZED, evaluate(p)};
 
 	std::vector<Move> moves;
@@ -16,14 +16,18 @@ std::pair<Move, Evaluation> search(Position p, Depth d) {
 		if (not p.is_legal(m)) continue;
 		copy = p;
 		copy.do_move(m);
-		Evaluation e = search(copy, d-1).second;
-		if ( e > best_found.second and p.get_active() == WHITE or
-			 e < best_found.second and p.get_active() == BLACK )
+		Evaluation e = search(copy, d-1, ab).second;
+		if ( e > best_found.second and p.get_active() == WHITE ) {
 			best_found = {m, e};
+			ab.alpha = e;
+		} else if ( e < best_found.second and p.get_active() == BLACK ) {
+			best_found = {m, e};
+			ab.beta = e;
+		}
 	}
 
 	if (best_found.first == UNINITIALIZED) p.report_lack_of_legal_moves();
 	if (p.get_state() == DRAW) return {UNINITIALIZED, 0};
-	if (p.get_state() == WIN) return {UNINITIALIZED, best_ev[p.get_active()]};
+	if (p.get_state() == WIN) return {UNINITIALIZED, -best_ev[p.get_active()]};
 	return best_found;
 }
