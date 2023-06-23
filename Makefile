@@ -1,5 +1,5 @@
 CXX := g++
-CPPFLAGS := -g -std=c++20 -O2 -flto
+CPPFLAGS := -g -std=c++20 -Ofast -flto -march=native -frename-registers -funroll-loops -openmp -ftree-parallelize-loops=16 -fprofile-correction -fprofile-use
 LIBS := -mbmi2 -lsfml-graphics -lsfml-window -lsfml-system
 LDFLAGS := $(LIBS)
 SRCEXT := cpp
@@ -17,7 +17,7 @@ all: $(TARGET)
 
 clean:
 	@echo "Cleaning..."
-	rm -rf $(OBJDIR) $(TARGET)
+	rm -rf $(OBJECTS) $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	@echo "Linking" $(TARGET) "..."
@@ -26,7 +26,7 @@ $(TARGET): $(OBJECTS)
 $(OBJDIR)/attack.o: $(SRCDIR)/attack.cpp
 	@echo "Compiling" $@ "..."
 	@mkdir -p $(OBJDIR)
-	$(CXX) $(CPPFLAGS) -march=native -fconstexpr-ops-limit=1000000000 -c -o $@ $<
+	$(CXX) $(CPPFLAGS) -fconstexpr-ops-limit=1000000000 -c -o $@ $<
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@echo "Compiling" $@ "..."
