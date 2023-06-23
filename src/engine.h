@@ -26,7 +26,7 @@ const std::array<Evaluation, 7> piece_cost = {
 	3, // KNIGHT
 	5, // ROOK
 	9, // QUEEN
-	0, // KING
+	100000000, // KING
 	0, // NONE_PIECE
 };
 

@@ -42,7 +42,7 @@ std::pair<Move, Evaluation> search(Position p, Depth d, AB ab, bool only_capture
 
 		if (only_capture and popcount(copy.get_position()) == popcount(p.get_position())) continue;
 		
-		Evaluation e = search(copy, d-1, ab, popcount(copy.get_position()) != popcount(p.get_position()) and d == 1 or only_capture).second;
+		Evaluation e = search(copy, d-1, ab, popcount(copy.get_position()) != popcount(p.get_position()) and d == 0 or only_capture).second;
 		if ( e > best_found.second and p.get_active() == WHITE ) {
 			best_found = {m, e};
 			ab.alpha = e;
@@ -84,7 +84,7 @@ Evaluation evaluate_move(Move m, Position const& p) {
 		Bitboard pawn_attack = 0;
 		pawn_attack |= (pawn_position << (pawn_direction[opponent] + WEST)) & ~FILE_H;
 		pawn_attack |= (pawn_position << (pawn_direction[opponent] + EAST)) & ~FILE_A;
-		e = not getbit(pawn_attack, to(m));
+		e = -getbit(pawn_attack, to(m)) * piece_cost[from(m)];
 	}
 	return e;
 }
