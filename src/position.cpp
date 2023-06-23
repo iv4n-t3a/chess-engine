@@ -25,6 +25,7 @@ Position::Position() {
 	castlerights = 0b1111;
 	castle_happened = 0;
 	to_en_passant = NONE_SQUARE;
+	history.reserve(100);
 }
 
 void Position::generate_pseudolegal_moves(std::vector<Move>& g) {

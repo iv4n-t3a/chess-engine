@@ -7,6 +7,7 @@ std::pair<Move, Evaluation> search(Position p, Depth d, AB ab) {
 	if (d == 0) return {UNINITIALIZED, evaluate(p)};
 
 	std::vector<Move> moves;
+	moves.reserve(218);
 	p.generate_pseudolegal_moves(moves);
 
 	std::pair<Move, Evaluation> best_found = {UNINITIALIZED, -best_ev[p.get_active()]};
