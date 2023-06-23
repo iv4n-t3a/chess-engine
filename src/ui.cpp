@@ -31,6 +31,8 @@ void UI::player_move() {
 	}
 }
 void UI::computer_move() {
-	Move m = search(pos.get_position(), 5).first;
+	drw.unborder_all();
+	drw.redraw();
+	Move m = search(pos.get_position(), 4).first;
 	pos.do_move(m);
 }
