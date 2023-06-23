@@ -6,11 +6,13 @@
 
 #include "base.h"
 #include "bitboard.h"
+#include "zobrist.h"
 
 
 class Position {
 	std::array<Bitboard, 6> by_type;
 	std::array<Bitboard, 2> by_side;
+
 	Bitboard all;
 	Square to_en_passant;
 
@@ -19,6 +21,8 @@ class Position {
 	CastleRights castlerights;
 	CastleRights castle_happened;
 	std::vector<Hash> history;
+
+	Hasher hasher;
 public:
 	Position();
 
@@ -27,7 +31,10 @@ public:
 	void generate_pseudolegal_moves(std::vector<Move>& to_generate_in);
 	bool is_legal(Move) const;
 	void report_lack_of_legal_moves();
-	Hash hash() const;
+	inline Hash hash() const { return hasher.get(); };
+
+	Piece piece_at(Square);
+	Side side_at(Square);
 
 	inline Bitboard get_position(Piece p, Side s) const { return by_type[p] & by_side[s]; }
 	inline Bitboard get_position(Piece p) const { return by_type[p]; }
@@ -61,9 +68,12 @@ protected:
 
 	Bitboard calc_attackers(Square target, Side by, Bitboard blockers) const;
 
-	void set_piece(Square, Piece, Side);
 	void erase_piece(Square);
 	void move_piece(Square, Square);
+
+	void set_piece(Square, Piece, Side);
+	void erase_piece(Square, Piece, Side);
+	void move_piece(Square, Square, Piece, Side);
 };
 
 #endif // #ifndef POSITION

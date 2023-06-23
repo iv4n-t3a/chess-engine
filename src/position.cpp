@@ -45,6 +45,8 @@ void Position::do_move(Move m) {
 		case PROMOTION: do_promotion(m); break;
 	};
 
+	hasher.invert_player();
+
 	update_castle_rights();
 	update_to_en_passant(m);
 	update_state();
@@ -60,18 +62,6 @@ void Position::report_lack_of_legal_moves() {
 	if (state == CHECK) state = WIN;
 	else state = DRAW;
 }
-Hash Position::hash() const {
-	return
-		get_position(PAWN)   * 0x2601'2006'1606'2016 +
-		get_position(BISHOP) * 0x1234'5678'90ab'cdef +
-		get_position(KNIGHT) * 0x1984'2280'7770'6660 +
-		get_position(ROOK)   * 0xACDC'ABBA'BABA'DEDA +
-		get_position(QUEEN)  * 0x3141'5926'5358'9793 +
-		get_position(KING)   * 0x2718'2818'2845'9045 +
-		get_position(BLACK)  * 0xD2D4'D7D5'C2C4'E7E5 +
-		active               * 0x1248'1632'6412'8256;
-}
-
 
 void Position::generate_normal_moves(std::vector<Move>& g) {
 	for (Bb_iterator i( get_position(PAWN, active) & ~rankmasks[promotion_rank[active]] ); i.not_ended(); ++i)
@@ -86,6 +76,8 @@ void Position::generate_normal_moves(std::vector<Move>& g) {
 		generate_moves_by_attack(*i, calc_king_attack(*i), g);
 }
 void Position::generate_castles(std::vector<Move>& g) {
+	if (state == CHECK) return;
+
 	if (active == WHITE) {
 		if (can_castle(castlerights, WHITE_OO) and not getbit(get_position(), F1) and not getbit(get_position(), G1))
 			g.push_back(build_castle(WHITE_OO));
@@ -163,7 +155,7 @@ void Position::update_history(Move m) {
 }
 void Position::update_state() {
 	if (state == CHECK and not is_check()) state = PLAYING;
-	if (is_draw_by_rule50()) state = DRAW;
+	if (is_draw_by_rule50() or is_draw_by_repetitions()) state = DRAW;
 }
 void Position::update_castle_rights() {
 	castlerights &=	~(!getbit(get_position(WHITE), H1) << WHITE_OO);
@@ -201,34 +193,44 @@ Bitboard Position::calc_attackers(Square sq, Side by, Bitboard blockers) const {
 		calc_pawn_attack(sq, blockers, invert(by)) &  get_position(PAWN, by);
 }
 
+Piece Position::piece_at(Square sq) {
+	for (Piece p : { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING })
+		if (getbit(by_type[p], sq)) return p;
+	return NONE_PIECE;
+}
+Side Position::side_at(Square sq) {
+	for (Side s : { WHITE, BLACK })
+		if (getbit(by_side[s], sq)) return s;
+	return NONE_SIDE;
+}
+
+void Position::erase_piece(Square sq) {
+	Piece p = piece_at(sq);
+	Side s = side_at(sq);
+	erase_piece(sq, p, s);
+}
+void Position::move_piece(Square from, Square to) {
+	Piece p = piece_at(from);
+	Side s = side_at(from);
+	move_piece(from, to, p, s);
+}
+
 void Position::set_piece(Square sq, Piece p, Side s) {
+	hasher.invert_piece(sq, p, s);
 	set_1(by_type[p], sq);
 	set_1(by_side[s], sq);
 	set_1(all, sq);
 }
-void Position::erase_piece(Square s) {
-	set_0(by_type[PAWN], s);
-	set_0(by_type[BISHOP], s);
-	set_0(by_type[KNIGHT], s);
-	set_0(by_type[ROOK], s);
-	set_0(by_type[QUEEN], s);
-	set_0(by_type[KING], s);
-
-	set_0(by_side[WHITE], s);
-	set_0(by_side[BLACK], s);
-
-	set_0(all, s);
+void Position::erase_piece(Square sq, Piece p, Side s) {
+	if (p == NONE_PIECE) return;
+	hasher.invert_piece(sq, p, s);
+	set_0(by_type[p], sq);
+	set_0(by_side[s], sq);
+	set_0(all, sq);
 }
-void Position::move_piece(Square from, Square to) {
-	mv(by_type[PAWN], from, to);
-	mv(by_type[BISHOP], from, to);
-	mv(by_type[KNIGHT], from, to);
-	mv(by_type[ROOK], from, to);
-	mv(by_type[QUEEN], from, to);
-	mv(by_type[KING], from, to);
-
-	mv(by_side[WHITE], from, to);
-	mv(by_side[BLACK], from, to);
-
-	mv(all, from, to);
+void Position::move_piece(Square from, Square to, Piece p, Side s) {
+	erase_piece(to);
+	if (p == NONE_PIECE) return;
+	erase_piece(from, p, s);
+	set_piece(to, p, s);
 }

@@ -1,5 +1,5 @@
 CXX := g++
-CPPFLAGS := -g -std=c++20 -Ofast -flto -march=native -frename-registers -funroll-loops -openmp -ftree-parallelize-loops=16 -fprofile-correction -fprofile-use
+CPPFLAGS := -g -std=c++20 -Ofast -flto -march=native -frename-registers -funroll-loops -openmp -ftree-parallelize-loops=16
 LIBS := -mbmi2 -lsfml-graphics -lsfml-window -lsfml-system
 LDFLAGS := $(LIBS)
 SRCEXT := cpp

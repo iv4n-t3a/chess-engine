@@ -52,6 +52,7 @@ const std::array<Bitboard, 8> rankmasks = { RANK_1, RANK_2, RANK_3, RANK_4, RANK
 enum Side {
 	WHITE,
 	BLACK,
+	NONE_SIDE
 };
 enum Piece {
 	PAWN,
@@ -60,6 +61,7 @@ enum Piece {
 	ROOK,
 	QUEEN,
 	KING,
+	NONE_PIECE
 };
 
 enum MoveType {
