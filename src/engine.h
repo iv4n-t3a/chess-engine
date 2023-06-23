@@ -19,6 +19,6 @@ struct AB {
 
 
 Evaluation evaluate(Position const&); // defined in evaluation.cpp
-std::pair<Move, Evaluation> search(Position, Depth soft_limit, Depth hard_limit, Depth left = 0, AB ab = AB()); // defined in search.cpp
+std::pair<Move, Evaluation> search(Position, Depth soft_limit, Depth hard_limit, Depth left = 0, AB ab = AB(), bool only_capture=false); // defined in search.cpp
 
 #endif // #ifndef ENGINE

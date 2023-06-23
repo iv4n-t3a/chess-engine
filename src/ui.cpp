@@ -33,6 +33,6 @@ void UI::player_move() {
 void UI::computer_move() {
 	drw.unborder_all();
 	drw.redraw();
-	Move m = search(pos.get_position(), 4, 20).first;
+	Move m = search(pos.get_position(), 5, 20).first;
 	pos.do_move(m);
 }

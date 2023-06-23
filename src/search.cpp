@@ -3,8 +3,8 @@
 #include "engine.h"
 
 
-std::pair<Move, Evaluation> search(Position p, Depth soft_limit, Depth hard_limit, Depth left, AB ab) {
-	if (p.get_state() == CHECK and left == soft_limit and soft_limit + 1 != hard_limit) soft_limit++; // check reinwall
+std::pair<Move, Evaluation> search(Position p, Depth soft_limit, Depth hard_limit, Depth left, AB ab, bool only_capture) {
+	if ((p.get_state() == CHECK or only_capture) and left == soft_limit and soft_limit + 1 != hard_limit) soft_limit++; // check and capture reinwall
 	if (left == soft_limit) return {UNINITIALIZED, evaluate(p)};
 
 	std::vector<Move> moves;
@@ -19,7 +19,9 @@ std::pair<Move, Evaluation> search(Position p, Depth soft_limit, Depth hard_limi
 		copy = p;
 		copy.do_move(m);
 
-		Evaluation e = search(copy, soft_limit, hard_limit, left+1, ab).second;
+		if (only_capture and popcount(copy.get_position()) == popcount(p.get_position())) continue;
+
+		Evaluation e = search(copy, soft_limit, hard_limit, left+1, ab, popcount(copy.get_position()) != popcount(p.get_position()) and left == soft_limit or only_capture).second;
 		if ( e > best_found.second and p.get_active() == WHITE ) {
 			best_found = {m, e};
 			ab.alpha = e;
