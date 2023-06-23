@@ -9,7 +9,7 @@ static const int PIECECOUNT = 6;
 
 typedef uint64_t Bitboard;
 typedef uint8_t Square;
-typedef uint16_t Hash;
+typedef uint64_t Hash;
 typedef uint8_t File;
 typedef uint8_t Rank;
 typedef uint16_t Move;
