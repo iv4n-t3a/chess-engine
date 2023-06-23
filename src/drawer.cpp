@@ -61,6 +61,8 @@ Event Drawer::wait_event() {
 			return { PICKSQ, sq };
 		} else if (event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::U) {
 			return { UNDOMOVE, NONE_SQUARE };
+		} else if (event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Q) {
+			return { EXIT, NONE_SQUARE };
 		}
 	}
 	return { NONE_EVENT, NONE_SQUARE };

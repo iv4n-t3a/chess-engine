@@ -19,17 +19,12 @@ struct Color {
 };
 
 struct Config {
-	std::array<PlayerType, 2> players;
-    int
-		depth,
-		wight,
-		height;
+    int depth, wight, height;
 	std::string etcdir;
-
+	std::array<PlayerType, 2> players;
 	std::array<Color, 2> square_color;
 	std::array<Color, 2> inbordered_color;
 	Color background_color;
-
 	std::array<std::array<std::string, 7>, 3> texture_names;
 
 	inline std::string get_texture_path(Piece p, Side s) {

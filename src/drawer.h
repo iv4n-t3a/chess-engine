@@ -16,6 +16,7 @@
 enum EventType {
 	PICKSQ,
 	UNDOMOVE,
+	EXIT,
 	NONE_EVENT
 };
 struct Event {

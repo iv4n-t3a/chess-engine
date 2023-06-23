@@ -18,7 +18,7 @@ inline PlayerType player_type(char l) {
 Config generate_default_config() {
 	Config c;
 
-	c.depth = 12;
+	c.depth = 7;
 	c.wight = 600;
 	c.height = 800;
 

@@ -4,34 +4,51 @@
 #include "drawer.h"
 #include "ui.h"
 
-void print_bb(Bitboard bb) {
-	for (int i = 0; i < 64; i += 8) {
-		for (int j = i; j < i + 8; j++)
-			std::cout << getbit(bb, j);
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
+void print_help(char* name) {
+	std::cout << "Usage: " << name << " <options> {white player} {black player}\n" <<
+	"Player types:\n" <<
+	"	h - human\n" <<
+	"	b - bot\n" <<
+	"Options:\n" <<
+	"	-d or --depth - engine analise depth\n" <<
+	"	-p or --prgram-dir - program files directory\n" <<
+	"	-w or --wigth - window wigth\n" <<
+	"	-h or --height - window height\n" <<
+	"	-? or --help - show this message\n" <<
+	"Keys:\n" <<
+	"	U - undo move\n" <<
+	"	Q - quit\n";
 }
 
 int main(int argc, char *argv[]) {
-	Config cfg = generate_config(argc, argv);
+	Config cfg;
+	try { 
+		cfg = generate_config(argc, argv);
+	} catch (ParsingException e) {
+		print_help(argv[0]);
+		if (e == HELPEXEPT)
+			return 0;
+		return -1;
+	}
 	sf::RenderWindow win(sf::VideoMode(cfg.wight, cfg.height), "CHESS");
 
 	Position p;
 	Drawer drw(win, p, cfg);
 	UI ui(drw, p, cfg);
-	for (int i = 1; true; i = (i + 1) % 2) {
-		/* if(i) ui.player_move(); */
-		/* else ui.computer_move(); */
 
-		ui.player_move();
-		/* ui.computer_move(); */
+	for (;;) {
+		if(cfg.players[p.get_active()] == HUMAN) ui.player_move();
+		else ui.computer_move();
 
-		if (p.get_state() == DRAW) std::cout << "Draw!" << std::endl;
-		else if (p.get_state() == WIN) std::cout << (p.get_active() == WHITE ? "White " : "Black ") << "win!" << std::endl;
-		else continue;
-
-		return 0;
+		if (p.get_state() == DRAW) {
+			std::cout << "Draw!" << std::endl;
+			break;
+		}
+		if (p.get_state() == WIN) {
+			std::cout << (p.get_active() == WHITE ? "White " : "Black ") << "win!" << std::endl;
+			break;
+		}
 	}
+	drw.wait_event();
 	return 0;
 }
