@@ -22,6 +22,7 @@ Position::Position() {
 	by_side = { 0x0000'0000'0000'ffff, 0xffff'0000'0000'0000 };
 	all = 0xffff'0000'0000'ffff;
 	active = WHITE;
+	state = PLAYING;
 	castlerights = 0b1111;
 	castle_happened = 0;
 	to_en_passant = NONE_SQUARE;
@@ -155,7 +156,8 @@ void Position::update_history(Move m) {
 	history.push_back(hash());
 }
 void Position::update_state() {
-	if (state == CHECK and not is_check()) state = PLAYING;
+	if (state == CHECK) state = PLAYING;
+	if (is_check()) state = CHECK;
 	if (is_draw_by_rule50() or is_draw_by_repetitions()) state = DRAW;
 }
 void Position::update_castle_rights() {
