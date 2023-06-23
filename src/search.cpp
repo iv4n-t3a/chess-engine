@@ -3,8 +3,9 @@
 #include "engine.h"
 
 
-std::pair<Move, Evaluation> search(Position p, Depth d, AB ab) {
-	if (d == 0) return {UNINITIALIZED, evaluate(p)};
+std::pair<Move, Evaluation> search(Position p, Depth soft_limit, Depth hard_limit, Depth left, AB ab) {
+	if (p.get_state() == CHECK and left == soft_limit and soft_limit + 1 != hard_limit) soft_limit++; // check reinwall
+	if (left == soft_limit) return {UNINITIALIZED, evaluate(p)};
 
 	std::vector<Move> moves;
 	moves.reserve(218);
@@ -17,7 +18,8 @@ std::pair<Move, Evaluation> search(Position p, Depth d, AB ab) {
 		if (not p.is_legal(m)) continue;
 		copy = p;
 		copy.do_move(m);
-		Evaluation e = search(copy, d-1, ab).second;
+
+		Evaluation e = search(copy, soft_limit, hard_limit, left+1, ab).second;
 		if ( e > best_found.second and p.get_active() == WHITE ) {
 			best_found = {m, e};
 			ab.alpha = e;
