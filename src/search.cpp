@@ -24,6 +24,8 @@ std::pair<Move, Evaluation> search(Position p, Depth d, AB ab) {
 			best_found = {m, e};
 			ab.beta = e;
 		}
+		if (ab.alpha > ab.beta)
+			return best_found;
 	}
 
 	if (best_found.first == UNINITIALIZED) p.report_lack_of_legal_moves();
