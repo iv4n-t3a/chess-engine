@@ -12,16 +12,13 @@
 class Position {
 	std::array<Bitboard, 6> by_type;
 	std::array<Bitboard, 2> by_side;
-
 	Bitboard all;
 	Square to_en_passant;
-
 	Side active;
 	State state;
 	CastleRights castlerights;
 	CastleRights castle_happened;
 	std::vector<Hash> history;
-
 	Hasher hasher;
 public:
 	Position();
@@ -66,6 +63,7 @@ protected:
 	bool is_draw_by_rule50() const;
 	bool is_draw_by_repetitions() const;
 
+	Bitboard calc_attackers(Square target, Side by) const;
 	Bitboard calc_attackers(Square target, Side by, Bitboard blockers) const;
 
 	void erase_piece(Square);

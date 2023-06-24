@@ -81,14 +81,14 @@ void Position::generate_castles(std::vector<Move>& g) const {
 	if (state == CHECK) return;
 
 	if (active == WHITE) {
-		if (can_castle(castlerights, WHITE_OO) and not getbit(get_position(), F1) and not getbit(get_position(), G1))
+		if (can_castle(castlerights, WHITE_OO) and not (calc_attackers(F1, invert(active)) or getbit(get_position(), F1) or getbit(get_position(), G1)) )
 			g.push_back(build_castle(WHITE_OO));
-		if (can_castle(castlerights, WHITE_OOO) and not getbit(get_position(), B1) and not getbit(get_position(), C1) and not getbit(get_position(), D1))
+		if (can_castle(castlerights, WHITE_OOO) and not (calc_attackers(D1, invert(active)) or getbit(get_position(), B1) or getbit(get_position(), C1) or getbit(get_position(), D1)) )
 			g.push_back(build_castle(WHITE_OOO));
 	} else {
-		if (can_castle(castlerights, BLACK_OO) and not getbit(get_position(), F8) and not getbit(get_position(), G8))
+		if (can_castle(castlerights, BLACK_OO) and not (calc_attackers(F8, invert(active)) or getbit(get_position(), F8) or getbit(get_position(), G8)) )
 			g.push_back(build_castle(BLACK_OO));
-		if (can_castle(castlerights, BLACK_OOO) and not getbit(get_position(), B8) and not getbit(get_position(), C8) and not getbit(get_position(), D8))
+		if (can_castle(castlerights, BLACK_OOO) and not (calc_attackers(D8, invert(active)) or getbit(get_position(), B8) or getbit(get_position(), C8) or getbit(get_position(), D8)) )
 			g.push_back(build_castle(BLACK_OOO));
 	}
 }
@@ -176,7 +176,7 @@ void Position::update_to_en_passant(Move m) {
 }
 
 bool Position::is_check() const {
-	return calc_attackers(bsf(get_position(KING, active)), invert(active), all);
+	return calc_attackers(bsf(get_position(KING, active)), invert(active));
 }
 bool Position::is_draw_by_rule50() const {
 	return history.size() == 100; // 100 reversible half moves equals draw by rule50
@@ -188,6 +188,9 @@ bool Position::is_draw_by_repetitions() const {
 	return c == 3;
 }
 
+Bitboard Position::calc_attackers(Square sq, Side by) const {
+	return calc_attackers(sq, by, all);
+}
 Bitboard Position::calc_attackers(Square sq, Side by, Bitboard blockers) const {
 	return
 		calc_king_attack(sq)                       &  get_position(KING, by) |
