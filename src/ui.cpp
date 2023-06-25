@@ -41,7 +41,9 @@ void UI::player_move() {
 			case PICKSQ:
 				to = e.picked;
 				break;
-			case NONE_EVENT:
+			case EXIT:
+				std::exit(0);
+			default:
 				break;
 		}
 
@@ -58,7 +60,8 @@ void UI::player_move() {
 }
 void UI::computer_move() {
 	drw.unborder_all();
-	Move m = search(pos, 7);
-	pos.do_move(m);
+	Move m = search(pos, cfg.depth);
+	if (pos.get_state() == PLAYING and pos.get_state() == CHECK)
+		pos.do_move(m);
 	drw.redraw();
 }
