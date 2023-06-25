@@ -59,9 +59,19 @@ void UI::player_move() {
 	}
 }
 void UI::computer_move() {
+	// check if mate
+	std::vector<Move> moves;
+	pos.generate_pseudolegal_moves(moves);
+	bool no_legal_moves = true;
+	for (Move m : moves)
+		if (pos.is_legal(m)) no_legal_moves = false;
+	if (no_legal_moves) {
+		pos.report_lack_of_legal_moves();
+		return;
+	}
+
 	drw.unborder_all();
 	Move m = search(pos, cfg.depth);
-	if (pos.get_state() == PLAYING and pos.get_state() == CHECK)
-		pos.do_move(m);
+	pos.do_move(m);
 	drw.redraw();
 }
