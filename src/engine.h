@@ -21,17 +21,14 @@ struct AB {
 };
 
 const std::array<Evaluation, 7> piece_cost = {
-	1, // PAWN
-	3, // BISHOP
-	3, // KNIGHT
-	5, // ROOK
-	9, // QUEEN
+	1,         // PAWN
+	3,         // BISHOP
+	3,         // KNIGHT
+	5,         // ROOK
+	9,         // QUEEN
 	100000000, // KING
-	0, // NONE_PIECE
+	0,         // NONE_PIECE
 };
-
-typedef std::unordered_map< Hash, std::tuple<Move, Evaluation, Depth> > HashTable;
-
 
 Evaluation evaluate(Position const&); // defined in evaluation.cpp
 Move search(Position, Depth); // defined in search.cpp

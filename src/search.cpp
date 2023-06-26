@@ -2,29 +2,20 @@
 
 #include "engine.h"
 
+#include <map>
 #include <unordered_map>
 
 
-HashTable table;
-
 void sort_moves(std::vector<Move>&, Position const&);
 Evaluation evaluate_move(Move, Position const&);
-std::pair<Move, Evaluation> search(Position, Depth, AB, bool only_capture=false);
+std::pair<Move, Evaluation> search(Position, Depth, AB);
 
 Move search(Position p, Depth d) {
-	table.clear();
 	return search(p, d, AB()).first; 
 }
 
-std::pair<Move, Evaluation> search(Position p, Depth d, AB ab, bool only_capture) {
-	if (table.find(p.hash()) != table.end()) {
-		Move m; Evaluation e; Depth l;
-		std::tie(m, e, l) = table[p.hash()];
-		if (l <= d)
-			return { m, e };
-	}
-
-	if ((p.get_state() == CHECK or only_capture) and d == 0) d++; // check and capture reinwall
+std::pair<Move, Evaluation> search(Position p, Depth d, AB ab) {
+	if (p.get_state() == CHECK and d == 0) d++; // check reinwall
 	if (d == 0) return {UNINITIALIZED, evaluate(p)};
 
 	std::vector<Move> moves;
@@ -32,17 +23,18 @@ std::pair<Move, Evaluation> search(Position p, Depth d, AB ab, bool only_capture
 	p.generate_pseudolegal_moves(moves);
 	sort_moves(moves, p);
 
+	bool no_possible_moves = true;
 	std::pair<Move, Evaluation> best_found = {UNINITIALIZED, -best_ev[p.get_active()]};
 
 	Position copy;
+
 	for (Move m : moves) {
 		if (not p.is_legal(m)) continue;
 		copy = p;
 		copy.do_move(m);
+		no_possible_moves = false;
 
-		if (only_capture and popcount(copy.get_position()) == popcount(p.get_position())) continue;
-		
-		Evaluation e = search(copy, d-1, ab, popcount(copy.get_position()) != popcount(p.get_position()) and d == 1 or only_capture).second;
+		Evaluation e = search(copy, d-1, ab).second;
 		if ( e > best_found.second and p.get_active() == WHITE ) {
 			best_found = {m, e};
 			ab.alpha = e;
@@ -54,12 +46,9 @@ std::pair<Move, Evaluation> search(Position p, Depth d, AB ab, bool only_capture
 			return best_found;
 	}
 
-	if (best_found.first == UNINITIALIZED) p.report_lack_of_legal_moves();
-
-	if (p.get_state() == DRAW) return best_found = {UNINITIALIZED, 0};
-	if (p.get_state() == WIN) return best_found = {UNINITIALIZED, -best_ev[p.get_active()]};
-
-	table[p.hash()] = { best_found.first, best_found.second, d };
+	if (no_possible_moves) p.report_lack_of_legal_moves();
+	if (p.get_state() == DRAW) return {UNINITIALIZED, 0};
+	if (p.get_state() == WIN) return {UNINITIALIZED, -best_ev[p.get_active()]};
 	return best_found;
 }
 
