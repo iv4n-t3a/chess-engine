@@ -63,6 +63,7 @@ bool Position::is_legal(Move m) const {
 void Position::report_lack_of_legal_moves() {
 	if (state == CHECK) state = WIN;
 	else state = DRAW;
+	active = invert(active);
 }
 
 void Position::generate_normal_moves(std::vector<Move>& g) const {
