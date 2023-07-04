@@ -35,7 +35,7 @@ std::pair<Move, Evaluation> search(Position p, Depth d, AB ab) {
 		no_possible_moves = false;
 
 		Evaluation e = search(copy, d-1, ab).second;
-		if ( e > best_found.second and p.get_active() == WHITE ) {
+		if ( e >= best_found.second and p.get_active() == WHITE ) {
 			best_found = {m, e};
 			ab.alpha = e;
 		} else if ( e < best_found.second and p.get_active() == BLACK ) {
@@ -48,7 +48,7 @@ std::pair<Move, Evaluation> search(Position p, Depth d, AB ab) {
 
 	if (no_possible_moves) p.report_lack_of_legal_moves();
 	if (p.get_state() == DRAW) return {UNINITIALIZED, 0};
-	if (p.get_state() == WIN) return {UNINITIALIZED, -best_ev[p.get_active()]};
+	if (p.get_state() == WIN) return {UNINITIALIZED, best_ev[p.get_active()]};
 	return best_found;
 }
 
