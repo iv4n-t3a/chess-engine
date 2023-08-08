@@ -4,6 +4,7 @@
 
 #include <map>
 #include <unordered_map>
+#include <algorithm>
 
 
 void sort_moves(std::vector<Move>&, Position const&);
@@ -38,7 +39,7 @@ std::pair<Move, Evaluation> search(Position p, Depth d, AB ab) {
 		if ( e >= best_found.second and p.get_active() == WHITE ) {
 			best_found = {m, e};
 			ab.alpha = e;
-		} else if ( e < best_found.second and p.get_active() == BLACK ) {
+		} else if ( e <= best_found.second and p.get_active() == BLACK ) {
 			best_found = {m, e};
 			ab.beta = e;
 		}
