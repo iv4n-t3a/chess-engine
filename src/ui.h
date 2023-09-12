@@ -6,17 +6,17 @@
 
 
 class UI {
-	Drawer& drw;
-	Config cfg;
-	Position& pos;
-	std::vector<Position> history;
+  Drawer& drw;
+  Config cfg;
+  Position& pos;
+  std::vector<Position> history;
 public:
-	UI(Drawer& d, Position& p, Config c);
-	void player_move();
-	void computer_move();
+  UI(Drawer& d, Position& p, Config c);
+  void player_move();
+  void computer_move();
 private:
-	std::pair<Square, Square> pick_move();
-	Square pick_move(Square from);
+  std::pair<Square, Square> pick_move();
+  Square pick_move(Square from);
 };
 
 #endif
