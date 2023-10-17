@@ -1,17 +1,17 @@
 #ifndef CONFIG
 #define CONFIG
 
-#include <iostream>
 #include <array>
+#include <iostream>
 
 #include "base.h"
 
 enum PlayerType {
-    HUMAN,
-    ENGINE
+  HUMAN,
+  ENGINE
 };
 enum ParsingException {
-    FORMATERR,
+  FORMATERR,
   HELPEXEPT,
 };
 struct Color {
@@ -19,7 +19,7 @@ struct Color {
 };
 
 struct Config {
-    int depth, wight, height;
+  int depth, wight, height;
   std::string etcdir;
   std::array<PlayerType, 2> players;
   std::array<Color, 2> square_color;

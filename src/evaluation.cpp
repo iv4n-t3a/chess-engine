@@ -1,5 +1,4 @@
 #include "attack.h"
-
 #include "engine.h"
 
 const Evaluation material_k = 1000;

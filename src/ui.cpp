@@ -1,10 +1,9 @@
-#include "config.h"
-#include "drawer.h"
-#include "moves.h"
-#include "engine.h"
-
 #include "ui.h"
 
+#include "config.h"
+#include "drawer.h"
+#include "engine.h"
+#include "moves.h"
 
 UI::UI(Drawer& d, Position& p, Config c) : drw(d), pos(p), cfg(c) {
 }

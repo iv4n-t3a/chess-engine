@@ -1,11 +1,9 @@
-#include "moves.h"
-
-#include "engine.h"
-
+#include <algorithm>
 #include <map>
 #include <unordered_map>
-#include <algorithm>
 
+#include "engine.h"
+#include "moves.h"
 
 void sort_moves(std::vector<Move>&, Position const&);
 Evaluation evaluate_move(Move, Position const&);
@@ -16,7 +14,7 @@ Move search(Position p, Depth d) {
 }
 
 std::pair<Move, Evaluation> search(Position p, Depth d, AB ab) {
-  if (p.get_state() == CHECK and d == 0) d++; // check reinwall
+  if (p.get_state() == CHECK and d == 0) d++;  // check reinwall
   if (d == 0) return {UNINITIALIZED, evaluate(p)};
 
   std::vector<Move> moves;
@@ -35,11 +33,11 @@ std::pair<Move, Evaluation> search(Position p, Depth d, AB ab) {
     copy.do_move(m);
     no_possible_moves = false;
 
-    Evaluation e = search(copy, d-1, ab).second;
-    if ( e >= best_found.second and p.get_active() == WHITE ) {
+    Evaluation e = search(copy, d - 1, ab).second;
+    if (e >= best_found.second and p.get_active() == WHITE) {
       best_found = {m, e};
       ab.alpha = e;
-    } else if ( e <= best_found.second and p.get_active() == BLACK ) {
+    } else if (e <= best_found.second and p.get_active() == BLACK) {
       best_found = {m, e};
       ab.beta = e;
     }
@@ -54,14 +52,14 @@ std::pair<Move, Evaluation> search(Position p, Depth d, AB ab) {
 }
 
 void sort_moves(std::vector<Move>& m, Position const& p) {
-  std::sort(m.begin(), m.end(), [&p](Move a, Move b){ return evaluate_move(a, p) > evaluate_move(b, p); });
+  std::sort(m.begin(), m.end(), [&p](Move a, Move b) { return evaluate_move(a, p) > evaluate_move(b, p); });
 }
 Evaluation evaluate_move(Move m, Position const& p) {
   Evaluation e;
   if (move_type(m) == PROMOTION)
     e = 2500 + piece_cost[p.piece_at(square(file_to(m), promotion_rank[p.get_active()]) + pawn_direction[p.get_active()])];
   else if (move_type(m) == NORMAL and getbit(p.get_position(), to(m)))
-    e = 2000 + 10*piece_cost[p.piece_at(to(m))] - piece_cost[p.piece_at(from(m))];
+    e = 2000 + 10 * piece_cost[p.piece_at(to(m))] - piece_cost[p.piece_at(from(m))];
   else if (move_type(m) == EN_PASSANT)
     e = 1500;
   else if (move_type(m) == CASTLE)

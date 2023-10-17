@@ -1,17 +1,15 @@
 #ifndef DRAWER
 #define DRAWER
 
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 #include <array>
 #include <string>
 #include <tuple>
 
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
-
 #include "base.h"
-#include "position.h"
 #include "config.h"
-
+#include "position.h"
 
 enum EventType {
   PICKSQ,
@@ -29,9 +27,10 @@ class Drawer {
   int square_size;
   Position const& pos;
   Config cfg;
-  std::array< std::array<sf::Texture, 6>, 2 >textures;
+  std::array<std::array<sf::Texture, 6>, 2> textures;
   Bitboard bordered = 0;
-public:
+
+ public:
   Drawer(sf::RenderWindow&, Position const&, Config c);
   Event wait_event();
   void redraw();
@@ -39,9 +38,8 @@ public:
   inline void border(Square sq) { set_1(bordered, sq); }
   inline void unborder_all() { bordered = 0; }
 
-private:
+ private:
   sf::Color to_sf_color(Color);
 };
 
-
-#endif // #ifndef DRAWER
+#endif  // #ifndef DRAWER

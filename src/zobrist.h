@@ -5,7 +5,8 @@
 
 class Hasher {
   Hash hash = 0;
-public:
+
+ public:
   void invert_piece(Square sq, Piece p, Side s);
   void invert_player();
 

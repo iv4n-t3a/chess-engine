@@ -8,7 +8,6 @@
 #include "bitboard.h"
 #include "zobrist.h"
 
-
 class Position {
   std::array<Bitboard, 6> by_type;
   std::array<Bitboard, 2> by_side;
@@ -20,7 +19,8 @@ class Position {
   CastleRights castle_happened;
   std::vector<Hash> history;
   Hasher hasher;
-public:
+
+ public:
   Position();
 
   void do_move(Move);
@@ -42,7 +42,7 @@ public:
   inline bool get_castle_rights() const { return castlerights; };
   inline bool get_castle_happened() const { return castle_happened; };
 
-protected:
+ protected:
   void generate_normal_moves(std::vector<Move>& to_generate_in) const;
   void generate_castles(std::vector<Move>& to_generate_in) const;
   void generate_en_passants(std::vector<Move>& to_generate_in) const;
@@ -74,4 +74,4 @@ protected:
   void move_piece(Square, Square, Piece, Side);
 };
 
-#endif // #ifndef POSITION
+#endif  // #ifndef POSITION

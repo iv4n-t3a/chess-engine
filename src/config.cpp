@@ -1,11 +1,10 @@
-#include <iostream>
+#include "config.h"
+
 #include <array>
+#include <iostream>
 #include <string>
 
 #include "base.h"
-
-#include "config.h"
-
 
 inline PlayerType player_type(char l) {
   if (l == 'h')
@@ -31,7 +30,6 @@ Config generate_default_config() {
   c.inbordered_color[BLACK] = {136, 172, 43};
 
   c.background_color = {33, 32, 47};
-
 
   std::string ext = "png";
 

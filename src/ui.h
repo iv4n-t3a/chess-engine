@@ -4,17 +4,18 @@
 #include "config.h"
 #include "drawer.h"
 
-
 class UI {
   Drawer& drw;
   Config cfg;
   Position& pos;
   std::vector<Position> history;
-public:
+
+ public:
   UI(Drawer& d, Position& p, Config c);
   void player_move();
   void computer_move();
-private:
+
+ private:
   std::pair<Square, Square> pick_move();
   Square pick_move(Square from);
 };

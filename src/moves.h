@@ -1,11 +1,10 @@
 #ifndef MOVES
 #define MOVES
 
-#include "base.h"
-#include "attack.h"
-
 #include <limits>
 
+#include "attack.h"
+#include "base.h"
 
 const Move UNINITIALIZED = 0xFFFF;
 
@@ -48,33 +47,46 @@ constexpr Move build_castle(CastleType c) {
   return CASTLE | (c << 2);
 }
 
-
-inline Square formal_from(Move m) { // not optimised
+inline Square formal_from(Move m) {  // not optimised
   switch (move_type(m)) {
-    case NORMAL: return from(m);
-    case EN_PASSANT: return square(file_from(m), en_passant_rank[side(m)]);
-    case PROMOTION: return square(file_from(m), promotion_rank[side(m)]);
+    case NORMAL:
+      return from(m);
+    case EN_PASSANT:
+      return square(file_from(m), en_passant_rank[side(m)]);
+    case PROMOTION:
+      return square(file_from(m), promotion_rank[side(m)]);
     case CASTLE:
       switch (castle_type(m)) {
-        case WHITE_OO: return E1;
-        case WHITE_OOO: return E1;
-        case BLACK_OO: return E8;
-        case BLACK_OOO: return E8;
+        case WHITE_OO:
+          return E1;
+        case WHITE_OOO:
+          return E1;
+        case BLACK_OO:
+          return E8;
+        case BLACK_OOO:
+          return E8;
       }
   };
   return NONE_SQUARE;
 }
-inline Square formal_to(Move m) { // not optimised
+inline Square formal_to(Move m) {  // not optimised
   switch (move_type(m)) {
-    case NORMAL: return to(m);
-    case EN_PASSANT: return square(file_to(m), en_passant_rank[side(m)]) + pawn_direction[side(m)];
-    case PROMOTION: return square(file_to(m), promotion_rank[side(m)]) + pawn_direction[side(m)];
+    case NORMAL:
+      return to(m);
+    case EN_PASSANT:
+      return square(file_to(m), en_passant_rank[side(m)]) + pawn_direction[side(m)];
+    case PROMOTION:
+      return square(file_to(m), promotion_rank[side(m)]) + pawn_direction[side(m)];
     case CASTLE:
       switch (castle_type(m)) {
-        case WHITE_OO: return G1;
-        case WHITE_OOO: return C1;
-        case BLACK_OO: return G8;
-        case BLACK_OOO: return C8;
+        case WHITE_OO:
+          return G1;
+        case WHITE_OOO:
+          return C1;
+        case BLACK_OO:
+          return G8;
+        case BLACK_OOO:
+          return C8;
       }
   };
   return NONE_SQUARE;
