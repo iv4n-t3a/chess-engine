@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=CHESS
+Comment=very stupid chess engine
+Exec=CHESS
+Terminal=false
+Type=Application
+Icon=/etc/CHESS/icon.png
+Categories=Game

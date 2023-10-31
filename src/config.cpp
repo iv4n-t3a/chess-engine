@@ -21,7 +21,7 @@ Config generate_default_config() {
   c.wight = 600;
   c.height = 800;
 
-  c.etcdir = "/home/ivan/Projects/CHESS/etc/";
+  c.etcdir = "/etc/CHESS/";
 
   c.square_color[WHITE] = {238, 238, 210};
   c.square_color[BLACK] = {118, 150, 86};

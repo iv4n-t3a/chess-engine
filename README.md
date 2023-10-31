@@ -15,15 +15,19 @@
 1. Установите `g++`, `git`, `make` и `sfml`
 2. Соберите проект
 
-		git clone https://github.com/iv4n-t3a/chess-engine
-		cd chess-engine
-		make
+    git clone https://github.com/iv4n-t3a/chess-engine
+    cd chess-engine
+    sudo make install
+
+## Деинсталяция
+
+    sudo make uninstall
 
 ## Как пользоватся:
 
 Вывод справки
 
-	./chess --help
+	CHESS --help
 
 ## Как работает:
 
