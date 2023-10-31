@@ -24,7 +24,7 @@ install: $(TARGET)
 uninstall:
 	@rm -f /usr/share/applications/CHESS.desktop
 	@rm -f /bin/$(TARGET)
-	@rm -rf /bin/CHESS
+	@rm -rf /etc/CHESS
 
 clean:
 	@echo "Cleaning..."
