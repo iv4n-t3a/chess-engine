@@ -2,8 +2,8 @@
 #define TYPES
 
 #include <iostream>
+#include <cstdint>
 #include <array>
-
 
 static const int PIECECOUNT = 6;
 
